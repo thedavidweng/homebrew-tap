@@ -6,7 +6,7 @@ The tap can host multiple casks over time. `Pixiv-SwiftUI` is the first one curr
 
 ## Install
 
-Current example:
+### Pixiv-SwiftUI
 
 ```bash
 brew tap thedavidweng/homebrew-tap
@@ -15,7 +15,7 @@ brew install --cask pixiv-swiftui
 
 ## Upgrade
 
-For the currently published cask:
+### Pixiv-SwiftUI
 
 ```bash
 brew update
