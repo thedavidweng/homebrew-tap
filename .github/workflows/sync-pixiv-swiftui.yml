@@ -9,12 +9,12 @@ concurrency:
   group: sync-pixiv-swiftui
   cancel-in-progress: false
 
-permissions:
-  contents: write
-
 jobs:
   sync:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
     env:
       PYTHONDONTWRITEBYTECODE: "1"
     steps:
@@ -32,25 +32,36 @@ jobs:
       - name: Set up Homebrew tap
         run: brew tap thedavidweng/homebrew-tap "$GITHUB_WORKSPACE"
 
-      - name: Sync cask release
+      - name: Refresh local main
+        run: |
+          git fetch origin main
+          git rebase origin/main
+
+      - name: Sync cask releases
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python scripts/sync_pixiv_swiftui_release.py
+        run: python scripts/sync_cask_release.py --app pixiv-swiftui --app openkara
 
       - name: Run sync tests
-        run: python -m unittest tests.test_sync_pixiv_swiftui_release
+        run: python -m unittest tests.test_sync_cask_release
 
-      - name: Audit cask
-        run: brew audit --cask --strict --tap thedavidweng/homebrew-tap pixiv-swiftui
+      - name: Audit casks
+        run: |
+          brew audit --cask --strict --tap thedavidweng/homebrew-tap pixiv-swiftui
+          brew audit --cask --strict --tap thedavidweng/homebrew-tap openkara
 
       - name: Commit and push changes
         run: |
-          if git diff --quiet -- Casks/pixiv-swiftui.rb; then
+          owned_casks=(
+            Casks/pixiv-swiftui.rb
+            Casks/openkara.rb
+          )
+          mapfile -t changed_casks < <(git diff --name-only --diff-filter=ACMR -- "${owned_casks[@]}")
+          if [ "${#changed_casks[@]}" -eq 0 ]; then
             echo "No cask changes to commit"
             exit 0
           fi
 
-          git add Casks/pixiv-swiftui.rb
-          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Update Pixiv SwiftUI cask release'
-          git pull --rebase origin main
+          git add "${changed_casks[@]}"
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Update synced cask releases'
           git push origin HEAD:main
