@@ -25,7 +25,7 @@ brew upgrade --cask pixiv-swiftui
 ## Local Development
 
 ```bash
-brew audit --cask --strict Casks/pixiv-swiftui.rb
+brew audit --cask --strict --tap thedavidweng/homebrew-tap pixiv-swiftui
 ```
 
 If the app is blocked on first launch, remove quarantine manually:
@@ -38,4 +38,4 @@ xattr -rd com.apple.quarantine /Applications/Pixiv-SwiftUI.app
 
 Each cask in this tap can be maintained independently.
 
-For `Pixiv-SwiftUI`, the main repository contains release automation that updates `Casks/pixiv-swiftui.rb` after a tagged release. If you need to refresh it manually, update the version and both SHA256 values to match the latest GitHub release DMGs.
+For `Pixiv-SwiftUI`, this tap includes its own scheduled sync workflow that checks the latest upstream release and updates `Casks/pixiv-swiftui.rb` when needed. You can also run the workflow manually from the GitHub Actions page.

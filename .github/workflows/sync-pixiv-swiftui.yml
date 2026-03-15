@@ -1,0 +1,56 @@
+name: Sync Pixiv SwiftUI release
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: sync-pixiv-swiftui
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Homebrew tap
+        run: brew tap thedavidweng/homebrew-tap "$GITHUB_WORKSPACE"
+
+      - name: Sync cask release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/sync_pixiv_swiftui_release.py
+
+      - name: Run sync tests
+        run: python -m unittest tests.test_sync_pixiv_swiftui_release
+
+      - name: Audit cask
+        run: brew audit --cask --strict --tap thedavidweng/homebrew-tap pixiv-swiftui
+
+      - name: Commit and push changes
+        run: |
+          if git diff --quiet -- Casks/pixiv-swiftui.rb; then
+            echo "No cask changes to commit"
+            exit 0
+          fi
+
+          git add Casks/pixiv-swiftui.rb
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Update Pixiv SwiftUI cask release'
+          git pull --rebase origin main
+          git push origin HEAD:main
