@@ -50,11 +50,11 @@ def sample_openkara_payload(version="1.2.3"):
         "tag_name": f"v{version}",
         "assets": [
             {
-                "name": "OpenKara-arm64.dmg",
+                "name": f"OpenKara_{version}_aarch64.dmg",
                 "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
             },
             {
-                "name": "OpenKara-x86_64.dmg",
+                "name": f"OpenKara_{version}_x64.dmg",
                 "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
             },
         ],
@@ -78,10 +78,10 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
         self.assertEqual(module.APPS["openkara"]["repo_slug"], "thedavidweng/OpenKara")
         self.assertEqual(module.APPS["openkara"]["cask_path"], ROOT / "Casks" / "openkara.rb")
         self.assertEqual(
-            module.APPS["openkara"]["asset_names"],
+            module.APPS["openkara"]["asset_patterns"],
             {
-                "arm": "OpenKara-arm64.dmg",
-                "intel": "OpenKara-x86_64.dmg",
+                "arm": "_aarch64.dmg",
+                "intel": "_x64.dmg",
             },
         )
 

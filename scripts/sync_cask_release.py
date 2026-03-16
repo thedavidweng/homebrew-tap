@@ -23,9 +23,9 @@ APPS = {
     "openkara": {
         "repo_slug": "thedavidweng/OpenKara",
         "cask_path": ROOT / "Casks" / "openkara.rb",
-        "asset_names": {
-            "arm": "OpenKara-arm64.dmg",
-            "intel": "OpenKara-x86_64.dmg",
+        "asset_patterns": {
+            "arm": "_aarch64.dmg",
+            "intel": "_x64.dmg",
         },
     },
 }
@@ -69,6 +69,21 @@ def extract_sha256(asset):
     return value
 
 
+def find_asset(assets_by_name, app, arch):
+    """Find an asset by exact name or suffix pattern."""
+    if "asset_names" in app and arch in app["asset_names"]:
+        name = app["asset_names"][arch]
+        return assets_by_name.get(name)
+
+    if "asset_patterns" in app and arch in app["asset_patterns"]:
+        suffix = app["asset_patterns"][arch]
+        for name, asset in assets_by_name.items():
+            if name.endswith(suffix):
+                return asset
+
+    return None
+
+
 def extract_release_info(payload, app):
     if not isinstance(payload, dict):
         raise ReleaseError("malformed release payload")
@@ -82,13 +97,16 @@ def extract_release_info(payload, app):
         if isinstance(asset, dict) and isinstance(asset.get("name"), str):
             assets_by_name[asset["name"]] = asset
 
+    arches = app.get("asset_names", app.get("asset_patterns", {}))
+    sha256 = {}
+    for arch in arches:
+        asset = find_asset(assets_by_name, app, arch)
+        if asset is not None:
+            sha256[arch] = extract_sha256(asset)
+
     return {
         "version": normalize_version(payload.get("tag_name")),
-        "sha256": {
-            arch: extract_sha256(assets_by_name[name])
-            for arch, name in app["asset_names"].items()
-            if name in assets_by_name
-        },
+        "sha256": sha256,
     }
 
 
@@ -125,7 +143,8 @@ def replace_sha256_lines(cask_text, release):
 
 
 def update_cask_contents(cask_text, app, release):
-    missing_arches = [arch for arch in app["asset_names"] if arch not in release["sha256"]]
+    arches = app.get("asset_names", app.get("asset_patterns", {}))
+    missing_arches = [arch for arch in arches if arch not in release["sha256"]]
     if missing_arches:
         raise ReleaseError(f"missing assets for: {', '.join(missing_arches)}")
 
