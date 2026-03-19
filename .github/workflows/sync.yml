@@ -56,7 +56,10 @@ jobs:
             Casks/pixiv-swiftui.rb
             Casks/openkara.rb
           )
-          mapfile -t changed_casks < <(git diff --name-only --diff-filter=ACMR -- "${owned_casks[@]}")
+          changed_casks=()
+          while IFS= read -r line; do
+            [[ -n "$line" ]] && changed_casks+=("$line")
+          done < <(git diff --name-only --diff-filter=ACMR -- "${owned_casks[@]}")
           if [ "${#changed_casks[@]}" -eq 0 ]; then
             echo "No cask changes to commit"
             exit 0
