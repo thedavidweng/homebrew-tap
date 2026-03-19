@@ -1,4 +1,4 @@
-name: Sync Pixiv SwiftUI release
+name: Sync Releases
 
 on:
   schedule:
