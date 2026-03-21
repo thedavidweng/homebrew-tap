@@ -149,6 +149,13 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
             },
         )
 
+    def test_openkara_cask_has_postflight_quarantine_removal(self):
+        cask_text = OPENKARA_CASK_PATH.read_text(encoding="utf-8")
+
+        self.assertIn("postflight do", cask_text)
+        self.assertIn('system_command "/usr/bin/xattr"', cask_text)
+        self.assertIn('"#{appdir}/OpenKara.app"', cask_text)
+
     def test_extract_release_info_normalizes_tag_and_digests(self):
         module = load_module()
 
@@ -222,6 +229,25 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
             '         intel: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"',
             updated,
         )
+
+    def test_update_cask_contents_preserves_openkara_postflight(self):
+        module = load_module()
+
+        updated = module.update_cask_contents(
+            OPENKARA_CASK_PATH.read_text(encoding="utf-8"),
+            module.APPS["openkara"],
+            {
+                "version": "1.2.3",
+                "sha256": {
+                    "arm": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                    "intel": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                },
+            },
+        )
+
+        self.assertIn("postflight do", updated)
+        self.assertIn('system_command "/usr/bin/xattr"', updated)
+        self.assertIn('"#{appdir}/OpenKara.app"', updated)
 
     def test_update_cask_contents_handles_formatting_changes(self):
         module = load_module()

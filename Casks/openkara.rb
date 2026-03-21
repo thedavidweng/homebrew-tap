@@ -12,6 +12,11 @@ cask "openkara" do
 
   app "OpenKara.app"
 
+  postflight do
+    system_command "/usr/bin/xattr",
+                   args: ["-rd", "com.apple.quarantine", "#{appdir}/OpenKara.app"]
+  end
+
   livecheck do
     url :url
     strategy :github_latest
