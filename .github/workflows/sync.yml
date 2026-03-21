@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: sync-pixiv-swiftui
+  group: sync-cask-releases
   cancel-in-progress: false
 
 jobs:
@@ -40,7 +40,7 @@ jobs:
       - name: Sync cask releases
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python scripts/sync_cask_release.py --app pixiv-swiftui --app openkara
+        run: python scripts/sync_cask_release.py --app pixiv-swiftui --app openkara --app screenize
 
       - name: Run sync tests
         run: python -m unittest tests.test_sync_cask_release
@@ -49,12 +49,14 @@ jobs:
         run: |
           brew audit --cask --strict --tap thedavidweng/homebrew-tap pixiv-swiftui
           brew audit --cask --strict --tap thedavidweng/homebrew-tap openkara
+          brew audit --cask --strict --tap thedavidweng/homebrew-tap screenize
 
       - name: Commit and push changes
         run: |
           owned_casks=(
             Casks/pixiv-swiftui.rb
             Casks/openkara.rb
+            Casks/screenize.rb
           )
           changed_casks=()
           while IFS= read -r line; do

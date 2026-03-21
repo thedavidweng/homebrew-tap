@@ -1,10 +1,33 @@
 # homebrew-tap
 
-Homebrew tap for macOS apps and tools I maintain or help distribute.
+Homebrew tap for my own macOS app, plus a small set of additional third-party apps I help distribute.
 
-The tap currently includes `Pixiv-SwiftUI` plus prewired `OpenKara` support. `OpenKara` install and upgrade become usable after its first upstream release exists.
+## Apps
+
+### My own app
+
+- `OpenKara`
+
+### Additional third-party apps
+
+- `Screenize`
+- `Pixiv-SwiftUI`
 
 ## Install
+
+### OpenKara
+
+```bash
+brew tap thedavidweng/homebrew-tap
+brew install --cask openkara
+```
+
+### Screenize
+
+```bash
+brew tap thedavidweng/homebrew-tap
+brew install --cask screenize
+```
 
 ### Pixiv-SwiftUI
 
@@ -13,16 +36,21 @@ brew tap thedavidweng/homebrew-tap
 brew install --cask pixiv-swiftui
 ```
 
+## Upgrade
+
 ### OpenKara
 
-Available after the first upstream release:
-
 ```bash
-brew tap thedavidweng/homebrew-tap
-brew install --cask openkara
+brew update
+brew upgrade --cask openkara
 ```
 
-## Upgrade
+### Screenize
+
+```bash
+brew update
+brew upgrade --cask screenize
+```
 
 ### Pixiv-SwiftUI
 
@@ -31,20 +59,12 @@ brew update
 brew upgrade --cask pixiv-swiftui
 ```
 
-### OpenKara
-
-Available after the first upstream release:
-
-```bash
-brew update
-brew upgrade --cask openkara
-```
-
 ## Local Development
 
 ```bash
-brew audit --cask --strict --tap thedavidweng/homebrew-tap pixiv-swiftui
 brew audit --cask --strict --tap thedavidweng/homebrew-tap openkara
+brew audit --cask --strict --tap thedavidweng/homebrew-tap screenize
+brew audit --cask --strict --tap thedavidweng/homebrew-tap pixiv-swiftui
 ```
 
 If the app is blocked on first launch, remove quarantine manually:
@@ -57,4 +77,4 @@ xattr -rd com.apple.quarantine /Applications/Pixiv-SwiftUI.app
 
 Each cask in this tap can be maintained independently.
 
-This tap includes a scheduled sync workflow that checks upstream releases for `Pixiv-SwiftUI` and `OpenKara`, then updates the matching files in `Casks/` when needed. If `OpenKara` has not published its first release yet, it is skipped automatically and will start syncing once releases exist. You can also run the workflow manually from the GitHub Actions page.
+This tap includes a scheduled sync workflow that checks upstream releases for all three apps and updates the matching files in `Casks/` when needed. `OpenKara` is my own app in this tap. `Screenize` and `Pixiv-SwiftUI` are additional third-party apps synced the same way directly from their latest GitHub releases, without requiring any changes from their maintainers. You can also run the workflow manually from the GitHub Actions page.

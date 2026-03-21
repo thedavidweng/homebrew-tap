@@ -14,6 +14,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 SCRIPT_PATH = ROOT / "scripts" / "sync_cask_release.py"
 CASK_PATH = ROOT / "Casks" / "pixiv-swiftui.rb"
 OPENKARA_CASK_PATH = ROOT / "Casks" / "openkara.rb"
+SCREENIZE_CASK_PATH = ROOT / "Casks" / "screenize.rb"
 
 
 def load_module():
@@ -61,11 +62,23 @@ def sample_openkara_payload(version="1.2.3"):
     }
 
 
+def sample_screenize_payload(version="0.4.0"):
+    return {
+        "tag_name": f"v{version}",
+        "assets": [
+            {
+                "name": "Screenize.dmg",
+                "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            }
+        ],
+    }
+
+
 class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
     def test_app_config_contains_pixiv_swiftui_and_openkara(self):
         module = load_module()
 
-        self.assertEqual(set(module.APPS), {"pixiv-swiftui", "openkara"})
+        self.assertEqual(set(module.APPS), {"pixiv-swiftui", "openkara", "screenize"})
         self.assertEqual(module.APPS["pixiv-swiftui"]["repo_slug"], "Eslzzyl/Pixiv-SwiftUI")
         self.assertEqual(module.APPS["pixiv-swiftui"]["cask_path"], ROOT / "Casks" / "pixiv-swiftui.rb")
         self.assertEqual(
@@ -84,6 +97,9 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
                 "intel": "_x64.dmg",
             },
         )
+        self.assertEqual(module.APPS["screenize"]["repo_slug"], "syi0808/screenize")
+        self.assertEqual(module.APPS["screenize"]["cask_path"], ROOT / "Casks" / "screenize.rb")
+        self.assertEqual(module.APPS["screenize"]["asset_name"], "Screenize.dmg")
 
     def test_fetch_latest_release_includes_authorization_header_when_token_present(self):
         module = load_module()
@@ -145,6 +161,17 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
                 "arm": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "intel": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
             },
+        )
+
+    def test_extract_release_info_supports_single_release_asset(self):
+        module = load_module()
+
+        release = module.extract_release_info(sample_screenize_payload(), module.APPS["screenize"])
+
+        self.assertEqual(release["version"], "0.4.0")
+        self.assertEqual(
+            release["sha256"],
+            {"default": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"},
         )
 
     def test_main_returns_nonzero_for_malformed_digest_content(self):
@@ -392,6 +419,71 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
             self.assertIn('version "1.2.3"', tmp_cask.read_text(encoding="utf-8"))
             self.assertEqual(stderr.getvalue(), "")
 
+    def test_update_cask_contents_rewrites_single_sha256_line(self):
+        module = load_module()
+
+        cask_text = (
+            'cask "screenize" do\n'
+            '  version "0.3.1"\n'
+            '  sha256 "old-sha"\n'
+            "end\n"
+        )
+
+        updated = module.update_cask_contents(
+            cask_text,
+            module.APPS["screenize"],
+            {
+                "version": "0.4.0",
+                "sha256": {
+                    "default": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                },
+            },
+        )
+
+        self.assertIn('  version "0.4.0"', updated)
+        self.assertIn(
+            '  sha256 "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"',
+            updated,
+        )
+
+    def test_main_supports_screenize_app(self):
+        module = load_module()
+        called_apps = []
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_cask = pathlib.Path(tmpdir) / "screenize.rb"
+            tmp_cask.write_text(
+                (
+                    'cask "screenize" do\n'
+                    '  version "0.3.1"\n'
+                    '  sha256 "old-sha"\n'
+                    "end\n"
+                ),
+                encoding="utf-8",
+            )
+            stdout = io.StringIO()
+            stderr = io.StringIO()
+
+            def fetch_release(app):
+                called_apps.append(app)
+                return sample_screenize_payload()
+
+            with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                exit_code = module.main(
+                    ["--app", "screenize", "--cask", str(tmp_cask)],
+                    fetch_release=fetch_release,
+                )
+
+            self.assertEqual(exit_code, 0)
+            self.assertEqual(called_apps, [module.APPS["screenize"]])
+            self.assertIn("Updated", stdout.getvalue())
+            self.assertIn('version "0.4.0"', tmp_cask.read_text(encoding="utf-8"))
+            self.assertIn(
+                '  sha256 "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"',
+                tmp_cask.read_text(encoding="utf-8"),
+            )
+            self.assertEqual(stderr.getvalue(), "")
+
     def test_main_supports_repeated_app_flags(self):
         module = load_module()
         called_apps = []
@@ -435,6 +527,12 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
             self.assertIn('version "0.13.0"', pixiv_cask.read_text(encoding="utf-8"))
             self.assertIn('version "1.2.3"', openkara_cask.read_text(encoding="utf-8"))
             self.assertEqual(stderr.getvalue(), "")
+
+    def test_configured_screenize_cask_file_exists_and_is_readable(self):
+        module = load_module()
+
+        self.assertTrue(SCREENIZE_CASK_PATH.exists())
+        self.assertTrue(module.current_version(SCREENIZE_CASK_PATH.read_text(encoding="utf-8")))
 
     def test_main_skips_missing_latest_release_for_openkara(self):
         module = load_module()

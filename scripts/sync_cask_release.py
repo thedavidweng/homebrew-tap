@@ -28,6 +28,11 @@ APPS = {
             "intel": "_x64.dmg",
         },
     },
+    "screenize": {
+        "repo_slug": "syi0808/screenize",
+        "cask_path": ROOT / "Casks" / "screenize.rb",
+        "asset_name": "Screenize.dmg",
+    },
 }
 
 
@@ -71,6 +76,9 @@ def extract_sha256(asset):
 
 def find_asset(assets_by_name, app, arch):
     """Find an asset by exact name or suffix pattern."""
+    if arch == "default" and "asset_name" in app:
+        return assets_by_name.get(app["asset_name"])
+
     if "asset_names" in app and arch in app["asset_names"]:
         name = app["asset_names"][arch]
         return assets_by_name.get(name)
@@ -82,6 +90,13 @@ def find_asset(assets_by_name, app, arch):
                 return asset
 
     return None
+
+
+def release_targets(app):
+    if "asset_name" in app:
+        return ["default"]
+
+    return list(app.get("asset_names", app.get("asset_patterns", {})))
 
 
 def extract_release_info(payload, app):
@@ -97,7 +112,7 @@ def extract_release_info(payload, app):
         if isinstance(asset, dict) and isinstance(asset.get("name"), str):
             assets_by_name[asset["name"]] = asset
 
-    arches = app.get("asset_names", app.get("asset_patterns", {}))
+    arches = release_targets(app)
     sha256 = {}
     for arch in arches:
         asset = find_asset(assets_by_name, app, arch)
@@ -129,6 +144,9 @@ def replace_line(cask_text, prefix, new_line):
 
 
 def replace_sha256_lines(cask_text, release):
+    if set(release["sha256"]) == {"default"}:
+        return replace_line(cask_text, "sha256 ", f'  sha256 "{release["sha256"]["default"]}"')
+
     lines = cask_text.splitlines()
     for index, line in enumerate(lines):
         if line.strip().startswith("sha256 arm:"):
@@ -143,7 +161,7 @@ def replace_sha256_lines(cask_text, release):
 
 
 def update_cask_contents(cask_text, app, release):
-    arches = app.get("asset_names", app.get("asset_patterns", {}))
+    arches = release_targets(app)
     missing_arches = [arch for arch in arches if arch not in release["sha256"]]
     if missing_arches:
         raise ReleaseError(f"missing assets for: {', '.join(missing_arches)}")
