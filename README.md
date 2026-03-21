@@ -15,25 +15,26 @@ Homebrew tap for my own macOS app, plus a small set of additional third-party ap
 
 ## Install
 
+```bash
+brew tap thedavidweng/homebrew-tap
+```
+
 ### OpenKara
 
 ```bash
-brew tap thedavidweng/homebrew-tap
-brew install --cask openkara
+brew install --cask thedavidweng/tap/openkara
 ```
 
 ### Screenize
 
 ```bash
-brew tap thedavidweng/homebrew-tap
-brew install --cask screenize
+brew install --cask thedavidweng/tap/screenize
 ```
 
 ### Pixiv-SwiftUI
 
 ```bash
-brew tap thedavidweng/homebrew-tap
-brew install --cask pixiv-swiftui
+brew install --cask thedavidweng/tap/pixiv-swiftui
 ```
 
 ## Upgrade
