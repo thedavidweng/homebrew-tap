@@ -1,6 +1,6 @@
 cask "screenize" do
-  version "0.4.0"
-  sha256 "a401695a1a05cfaa158fd04cd6c2ef61af3b0a62c3f9f3d6284dd9da235f9271"
+  version "0.4.1"
+  sha256 "1402af55a5f2d7c34e384753df65bc32a6d59eed75059e00230312902e88cadb"
 
   url "https://github.com/syi0808/screenize/releases/download/v#{version}/Screenize.dmg"
   name "Screenize"
