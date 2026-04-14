@@ -33,6 +33,11 @@ APPS = {
         "cask_path": ROOT / "Casks" / "screenize.rb",
         "asset_name": "Screenize.dmg",
     },
+    "fluidvoice": {
+        "repo_slug": "altic-dev/FluidVoice",
+        "cask_path": ROOT / "Casks" / "fluidvoice.rb",
+        "asset_name_template": "Fluid-oss-{version}.dmg",
+    },
 }
 
 
@@ -74,10 +79,15 @@ def extract_sha256(asset):
     return value
 
 
-def find_asset(assets_by_name, app, arch):
+def find_asset(assets_by_name, app, arch, version=None):
     """Find an asset by exact name or suffix pattern."""
     if arch == "default" and "asset_name" in app:
         return assets_by_name.get(app["asset_name"])
+
+    if arch == "default" and "asset_name_template" in app:
+        if not isinstance(version, str) or not version:
+            raise ReleaseError("missing version for asset_name_template")
+        return assets_by_name.get(app["asset_name_template"].format(version=version))
 
     if "asset_names" in app and arch in app["asset_names"]:
         name = app["asset_names"][arch]
@@ -93,7 +103,7 @@ def find_asset(assets_by_name, app, arch):
 
 
 def release_targets(app):
-    if "asset_name" in app:
+    if "asset_name" in app or "asset_name_template" in app:
         return ["default"]
 
     return list(app.get("asset_names", app.get("asset_patterns", {})))
@@ -112,15 +122,16 @@ def extract_release_info(payload, app):
         if isinstance(asset, dict) and isinstance(asset.get("name"), str):
             assets_by_name[asset["name"]] = asset
 
+    version = normalize_version(payload.get("tag_name"))
     arches = release_targets(app)
     sha256 = {}
     for arch in arches:
-        asset = find_asset(assets_by_name, app, arch)
+        asset = find_asset(assets_by_name, app, arch, version=version)
         if asset is not None:
             sha256[arch] = extract_sha256(asset)
 
     return {
-        "version": normalize_version(payload.get("tag_name")),
+        "version": version,
         "sha256": sha256,
     }
 

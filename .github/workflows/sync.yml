@@ -40,7 +40,7 @@ jobs:
       - name: Sync cask releases
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python scripts/sync_cask_release.py --app pixiv-swiftui --app openkara --app screenize
+        run: python scripts/sync_cask_release.py --app pixiv-swiftui --app openkara --app screenize --app fluidvoice
 
       - name: Run sync tests
         run: python -m unittest tests.test_sync_cask_release
@@ -57,6 +57,7 @@ jobs:
             Casks/pixiv-swiftui.rb
             Casks/openkara.rb
             Casks/screenize.rb
+            Casks/fluidvoice.rb
           )
           changed_casks=()
           while IFS= read -r line; do
