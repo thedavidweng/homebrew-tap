@@ -7,6 +7,7 @@ Homebrew tap for my own macOS app, plus a small set of additional third-party ap
 ### My own app
 
 - `OpenKara`
+- `OpenLoop`
 
 ### Additional third-party apps
 
@@ -24,6 +25,12 @@ brew tap thedavidweng/homebrew-tap
 
 ```bash
 brew install --cask thedavidweng/tap/openkara
+```
+
+### OpenLoop
+
+```bash
+brew install --cask thedavidweng/tap/openloop
 ```
 
 ### Screenize
@@ -51,6 +58,13 @@ brew install --cask thedavidweng/tap/fluidvoice
 ```bash
 brew update
 brew upgrade --cask openkara
+```
+
+### OpenLoop
+
+```bash
+brew update
+brew upgrade --cask openloop
 ```
 
 ### Screenize
@@ -81,6 +95,7 @@ brew audit --cask --strict --tap thedavidweng/homebrew-tap openkara
 brew audit --cask --strict --tap thedavidweng/homebrew-tap screenize
 brew audit --cask --strict --tap thedavidweng/homebrew-tap pixiv-swiftui
 brew audit --cask --strict --tap thedavidweng/homebrew-tap fluidvoice
+brew audit --cask --strict --tap thedavidweng/homebrew-tap openloop
 ```
 
 If the app is blocked on first launch, remove quarantine manually:
@@ -93,4 +108,4 @@ xattr -rd com.apple.quarantine /Applications/Pixiv-SwiftUI.app
 
 Each cask in this tap can be maintained independently.
 
-This tap includes a scheduled sync workflow that checks upstream releases for all four apps and updates the matching files in `Casks/` when needed. `OpenKara` is my own app in this tap. `Screenize`, `Pixiv-SwiftUI`, and `FluidVoice` are additional third-party apps synced the same way directly from their latest GitHub releases, without requiring any changes from their maintainers. You can also run the workflow manually from the GitHub Actions page.
+This tap includes a scheduled sync workflow that checks upstream releases for all apps and updates the matching files in `Casks/` when needed. `OpenKara` is my own app in this tap. `Screenize`, `Pixiv-SwiftUI`, and `FluidVoice` are additional third-party apps synced the same way directly from their latest GitHub releases, without requiring any changes from their maintainers. You can also run the workflow manually from the GitHub Actions page.
