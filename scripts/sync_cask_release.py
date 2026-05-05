@@ -38,6 +38,11 @@ APPS = {
         "cask_path": ROOT / "Casks" / "fluidvoice.rb",
         "asset_name_template": "Fluid-oss-{version}.dmg",
     },
+    "openloop": {
+        "repo_slug": "thedavidweng/OpenLoop",
+        "cask_path": ROOT / "Casks" / "openloop.rb",
+        "asset_name_template": "OpenLoop_{version}_aarch64.dmg",
+    },
 }
 
 

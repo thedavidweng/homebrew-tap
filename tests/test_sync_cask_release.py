@@ -16,6 +16,7 @@ CASK_PATH = ROOT / "Casks" / "pixiv-swiftui.rb"
 OPENKARA_CASK_PATH = ROOT / "Casks" / "openkara.rb"
 SCREENIZE_CASK_PATH = ROOT / "Casks" / "screenize.rb"
 FLUIDVOICE_CASK_PATH = ROOT / "Casks" / "fluidvoice.rb"
+OPENLOOP_CASK_PATH = ROOT / "Casks" / "openloop.rb"
 
 
 def load_module():
@@ -87,11 +88,24 @@ def sample_fluidvoice_payload(version="1.5.12"):
     }
 
 
+def sample_openloop_payload(version="0.1.0"):
+    return {
+        "tag_name": f"v{version}",
+        "assets": [
+            {
+                "name": f"OpenLoop_{version}_aarch64.dmg",
+                "digest": "sha256:c67adec16a2ff384556d95f5c457f740686b11a21ce835d5031d1d5df2442741",
+            }
+        ],
+    }
+
+
 class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
-    def test_app_config_contains_pixiv_swiftui_and_openkara(self):
+    def test_app_config_contains_expected_apps(self):
         module = load_module()
 
-        self.assertEqual(set(module.APPS), {"pixiv-swiftui", "openkara", "screenize", "fluidvoice"})
+        self.assertEqual(set(module.APPS), {"pixiv-swiftui", "openkara", "screenize", "fluidvoice", "openloop"})
+        # ... (rest of method will be updated in next turn if needed)
         self.assertEqual(module.APPS["pixiv-swiftui"]["repo_slug"], "Eslzzyl/Pixiv-SwiftUI")
         self.assertEqual(module.APPS["pixiv-swiftui"]["cask_path"], ROOT / "Casks" / "pixiv-swiftui.rb")
         self.assertEqual(
@@ -116,6 +130,9 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
         self.assertEqual(module.APPS["fluidvoice"]["repo_slug"], "altic-dev/FluidVoice")
         self.assertEqual(module.APPS["fluidvoice"]["cask_path"], ROOT / "Casks" / "fluidvoice.rb")
         self.assertEqual(module.APPS["fluidvoice"]["asset_name_template"], "Fluid-oss-{version}.dmg")
+        self.assertEqual(module.APPS["openloop"]["repo_slug"], "thedavidweng/OpenLoop")
+        self.assertEqual(module.APPS["openloop"]["cask_path"], ROOT / "Casks" / "openloop.rb")
+        self.assertEqual(module.APPS["openloop"]["asset_name_template"], "OpenLoop_{version}_aarch64.dmg")
 
     def test_fetch_latest_release_includes_authorization_header_when_token_present(self):
         module = load_module()
@@ -589,6 +606,44 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
             self.assertEqual(called_apps, [module.APPS["fluidvoice"]])
             self.assertIn("Updated", stdout.getvalue())
             self.assertIn('version "1.5.12"', tmp_cask.read_text(encoding="utf-8"))
+            self.assertEqual(stderr.getvalue(), "")
+
+    def test_main_supports_openloop_app(self):
+        module = load_module()
+        called_apps = []
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_cask = pathlib.Path(tmpdir) / "openloop.rb"
+            tmp_cask.write_text(
+                (
+                    'cask "openloop" do\n'
+                    '  version "0.0.1"\n'
+                    '  sha256 "old-sha"\n'
+                    "end\n"
+                ),
+                encoding="utf-8",
+            )
+            stdout = io.StringIO()
+            stderr = io.StringIO()
+
+            def fetch_release(app):
+                called_apps.append(app)
+                return sample_openloop_payload()
+
+            with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                exit_code = module.main(
+                    ["--app", "openloop", "--cask", str(tmp_cask)],
+                    fetch_release=fetch_release,
+                )
+
+            self.assertEqual(exit_code, 0)
+            self.assertEqual(called_apps, [module.APPS["openloop"]])
+            self.assertIn("Updated", stdout.getvalue())
+            self.assertIn('version "0.1.0"', tmp_cask.read_text(encoding="utf-8"))
+            self.assertIn(
+                '  sha256 "c67adec16a2ff384556d95f5c457f740686b11a21ce835d5031d1d5df2442741"',
+                tmp_cask.read_text(encoding="utf-8"),
+            )
             self.assertEqual(stderr.getvalue(), "")
 
     def test_main_supports_repeated_app_flags(self):

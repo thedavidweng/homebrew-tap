@@ -1,12 +1,13 @@
 cask "openloop" do
   version "0.1.0"
-  sha256 :no_check
+  sha256 "c67adec16a2ff384556d95f5c457f740686b11a21ce835d5031d1d5df2442741"
 
   url "https://github.com/thedavidweng/OpenLoop/releases/download/v#{version}/OpenLoop_#{version}_aarch64.dmg"
   name "OpenLoop"
   desc "AI music generation desktop application"
   homepage "https://github.com/thedavidweng/OpenLoop"
 
+  depends_on arch: :arm64
   depends_on macos: ">= :sonoma"
 
   app "OpenLoop.app"
