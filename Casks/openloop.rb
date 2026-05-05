@@ -2,10 +2,10 @@ cask "openloop" do
   version "0.1.0"
   sha256 :no_check
 
-  url "https://github.com/openloop/openloop/releases/download/v#{version}/OpenLoop_#{version}_aarch64.dmg"
+  url "https://github.com/thedavidweng/OpenLoop/releases/download/v#{version}/OpenLoop_#{version}_aarch64.dmg"
   name "OpenLoop"
   desc "AI music generation desktop application"
-  homepage "https://github.com/openloop/openloop"
+  homepage "https://github.com/thedavidweng/OpenLoop"
 
   depends_on macos: ">= :sonoma"
 
