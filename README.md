@@ -1,13 +1,14 @@
 # homebrew-tap
 
-Homebrew tap for my own macOS app, plus a small set of additional third-party apps I help distribute.
+Homebrew tap for my own apps, plus a small set of additional third-party apps I help distribute.
 
 ## Apps
 
-### My own app
+### My own apps
 
 - `OpenKara`
 - `OpenLoop`
+- `Monarch Money CLI`
 
 ### Additional third-party apps
 
@@ -31,6 +32,12 @@ brew install --cask thedavidweng/tap/openkara
 
 ```bash
 brew install --cask thedavidweng/tap/openloop
+```
+
+### Monarch Money CLI
+
+```bash
+brew install --cask thedavidweng/homebrew-tap/monarchmoney-cli
 ```
 
 ### Screenize
@@ -67,6 +74,13 @@ brew update
 brew upgrade --cask openloop
 ```
 
+### Monarch Money CLI
+
+```bash
+brew update
+brew upgrade --cask monarchmoney-cli
+```
+
 ### Screenize
 
 ```bash
@@ -96,6 +110,7 @@ brew audit --cask --strict --tap thedavidweng/homebrew-tap screenize
 brew audit --cask --strict --tap thedavidweng/homebrew-tap pixiv-swiftui
 brew audit --cask --strict --tap thedavidweng/homebrew-tap fluidvoice
 brew audit --cask --strict --tap thedavidweng/homebrew-tap openloop
+brew audit --cask --strict --tap thedavidweng/homebrew-tap monarchmoney-cli
 ```
 
 If the app is blocked on first launch, remove quarantine manually:
@@ -108,4 +123,6 @@ xattr -rd com.apple.quarantine /Applications/Pixiv-SwiftUI.app
 
 Each cask in this tap can be maintained independently.
 
-This tap includes a scheduled sync workflow that checks upstream releases for all apps and updates the matching files in `Casks/` when needed. `OpenKara` is my own app in this tap. `Screenize`, `Pixiv-SwiftUI`, and `FluidVoice` are additional third-party apps synced the same way directly from their latest GitHub releases, without requiring any changes from their maintainers. You can also run the workflow manually from the GitHub Actions page.
+This tap includes a scheduled sync workflow that checks upstream releases for all apps and updates the matching files in `Casks/` when needed. `OpenKara` and `OpenLoop` are my own apps in this tap. `Screenize`, `Pixiv-SwiftUI`, and `FluidVoice` are additional third-party apps synced the same way directly from their latest GitHub releases, without requiring any changes from their maintainers. You can also run the workflow manually from the GitHub Actions page.
+
+`Monarch Money CLI` is published from the `monarchmoney-cli` repository itself via GoReleaser, so its cask is updated by the release workflow in that repo instead of this tap's sync job.
