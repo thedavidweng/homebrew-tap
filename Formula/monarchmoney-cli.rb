@@ -5,20 +5,20 @@
 class MonarchmoneyCli < Formula
   desc "A local, agent-friendly CLI for Monarch Money."
   homepage "https://github.com/thedavidweng/monarchmoney-cli"
-  version "0.2.2"
+  version "0.3.0"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/thedavidweng/monarchmoney-cli/releases/download/v0.2.2/monarch_darwin_x86_64.tar.gz"
-      sha256 "b66ed5308bf826b1b34b3a8147c713f0da96c528be6617494204b51331fdae4e"
+      url "https://github.com/thedavidweng/monarchmoney-cli/releases/download/v0.3.0/monarch_darwin_x86_64.tar.gz"
+      sha256 "441048a4aae3650edb67f1dd062b90d5148dfd72f43dd618738ce08434a89ad2"
 
       define_method(:install) do
         bin.install "monarch"
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/thedavidweng/monarchmoney-cli/releases/download/v0.2.2/monarch_darwin_arm64.tar.gz"
-      sha256 "725ae222fb28d2e777e70dd2fda288ae0d31d549f1142d31c0ec7616cd9721a2"
+      url "https://github.com/thedavidweng/monarchmoney-cli/releases/download/v0.3.0/monarch_darwin_arm64.tar.gz"
+      sha256 "f0bc1616d97ddc677b28b074ff9f26b9a66da3259a72336bf76926756d70ae4d"
 
       define_method(:install) do
         bin.install "monarch"
@@ -28,15 +28,15 @@ class MonarchmoneyCli < Formula
 
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      url "https://github.com/thedavidweng/monarchmoney-cli/releases/download/v0.2.2/monarch_linux_x86_64.tar.gz"
-      sha256 "4fcf32580a0f0678a931d414f79908d697bae0af6575db36a47a80279914b575"
+      url "https://github.com/thedavidweng/monarchmoney-cli/releases/download/v0.3.0/monarch_linux_x86_64.tar.gz"
+      sha256 "755e2f27e80fffb9a368fca3d6f08a616d0f614bcde5b5437ed56c0437cef0d1"
       define_method(:install) do
         bin.install "monarch"
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/thedavidweng/monarchmoney-cli/releases/download/v0.2.2/monarch_linux_arm64.tar.gz"
-      sha256 "5ddbdfdf3f3d75c6f8d2f9586f7ec6e218b24456843a926b9ec4094aaccebf24"
+      url "https://github.com/thedavidweng/monarchmoney-cli/releases/download/v0.3.0/monarch_linux_arm64.tar.gz"
+      sha256 "2383fa4516e0eef077deb131841b56b425dac7d83ce48acca63ca9146c4b1634"
       define_method(:install) do
         bin.install "monarch"
       end
