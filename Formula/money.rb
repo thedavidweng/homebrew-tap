@@ -10,7 +10,7 @@ class Money < Formula
   on_macos do
     on_intel do
       url "https://github.com/thedavidweng/money/releases/download/v0.1.0/money_0.1.0_darwin_amd64.tar.gz"
-      sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+      sha256 "f72936a34e583f59832c19012f263e512532a75ca4c58453539f648b7cf38775"
 
       def install
         bin.install "money"
@@ -18,7 +18,7 @@ class Money < Formula
     end
     on_arm do
       url "https://github.com/thedavidweng/money/releases/download/v0.1.0/money_0.1.0_darwin_arm64.tar.gz"
-      sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+      sha256 "e45337c0ac884ffcb8682709f406d1ae33e97daf5dafbfaf61ef50ae84faceb2"
 
       def install
         bin.install "money"
@@ -30,7 +30,7 @@ class Money < Formula
     on_intel do
       if Hardware::CPU.is_64_bit?
         url "https://github.com/thedavidweng/money/releases/download/v0.1.0/money_0.1.0_linux_amd64.tar.gz"
-        sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+        sha256 "094ae235f56cfc5ee2bfd003709039dae717555092d8c6a8c2c4643ed237d8cf"
 
         def install
           bin.install "money"
@@ -40,7 +40,7 @@ class Money < Formula
     on_arm do
       if Hardware::CPU.is_64_bit?
         url "https://github.com/thedavidweng/money/releases/download/v0.1.0/money_0.1.0_linux_arm64.tar.gz"
-        sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+        sha256 "6896296677ec7728be7bdf97edc5976fcd3ab54a26d11f763449ffa7b0429e65"
 
         def install
           bin.install "money"
