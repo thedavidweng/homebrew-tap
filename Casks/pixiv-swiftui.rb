@@ -1,9 +1,9 @@
 cask "pixiv-swiftui" do
   arch arm: "arm64", intel: "x86_64"
 
-  version "0.14.2"
-  sha256 arm:   "3f27401f93f5da73c097d918cc4fc632fad6a7e1a7686bb6777258b251ca23b0",
-         intel: "686c552bf905ef59d3cd97fe2c2e9b3cf11bbc89ae984d92843b3f1514dd078d"
+  version "0.14.3"
+  sha256 arm:   "3a336614129c059de325d3f29091c15343b8c3eb20a528796a4ed241f5ef71bb",
+         intel: "4c87beda46e9201cec6d7f3650eb1bfee68ad8f7efec424edfa37699fcf5d8bb"
 
   url "https://github.com/Eslzzyl/Pixiv-SwiftUI/releases/download/v#{version}/Pixiv-SwiftUI-#{arch}.dmg"
   name "Pixiv-SwiftUI"
