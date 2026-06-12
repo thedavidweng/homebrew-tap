@@ -10,6 +10,7 @@ Homebrew tap for my own apps, plus a small set of additional third-party apps I 
 - `OpenLoop`
 - `Money`
 - `Monarch Money CLI`
+- `Flickr CLI`
 
 ### Additional third-party apps
 
@@ -65,6 +66,12 @@ brew install --cask thedavidweng/tap/monarchmoney-cli
 monarch version
 ```
 
+### Flickr CLI
+
+```bash
+brew install --formula thedavidweng/tap/flickr
+```
+
 ### Screenize
 
 ```bash
@@ -113,6 +120,13 @@ brew update
 brew upgrade --cask monarchmoney-cli
 ```
 
+### Flickr CLI
+
+```bash
+brew update
+brew upgrade flickr
+```
+
 ### Screenize
 
 ```bash
@@ -137,6 +151,7 @@ brew upgrade --cask fluidvoice
 ## Local Development
 
 ```bash
+brew audit --strict --tap thedavidweng/homebrew-tap flickr
 brew audit --cask --strict --tap thedavidweng/homebrew-tap openkara
 brew audit --cask --strict --tap thedavidweng/homebrew-tap screenize
 brew audit --cask --strict --tap thedavidweng/homebrew-tap pixiv-swiftui
@@ -158,4 +173,4 @@ Each cask in this tap can be maintained independently.
 
 This tap includes a scheduled sync workflow that checks upstream releases for all apps and updates the matching files in `Casks/` when needed. `OpenKara` and `OpenLoop` are my own apps in this tap. `Screenize`, `Pixiv-SwiftUI`, and `FluidVoice` are additional third-party apps synced the same way directly from their latest GitHub releases, without requiring any changes from their maintainers. You can also run the workflow manually from the GitHub Actions page.
 
-`Money` and `Monarch Money CLI` are published from their own repositories via GoReleaser, so their casks are updated by the release workflow in those repos instead of this tap's sync job.
+`Money`, `Monarch Money CLI`, and `Flickr CLI` are published from their own repositories via GoReleaser, so their formulas/casks are updated by the release workflow in those repos instead of this tap's sync job.
