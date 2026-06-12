@@ -7,7 +7,7 @@ cask "fluidvoice" do
   desc "Fast offline dictation app for macOS"
   homepage "https://github.com/altic-dev/FluidVoice"
 
-  depends_on macos: ">= :sequoia"
+  depends_on macos: :sequoia
 
   app "FluidVoice.app"
 

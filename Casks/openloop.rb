@@ -8,7 +8,7 @@ cask "openloop" do
   homepage "https://github.com/thedavidweng/OpenLoop"
 
   depends_on arch: :arm64
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
 
   app "OpenLoop.app"
 

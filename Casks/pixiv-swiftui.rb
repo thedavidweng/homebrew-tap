@@ -10,7 +10,7 @@ cask "pixiv-swiftui" do
   desc "SwiftUI-based Pixiv third-party client"
   homepage "https://github.com/Eslzzyl/Pixiv-SwiftUI"
 
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
 
   app "Pixiv-SwiftUI.app"
 
