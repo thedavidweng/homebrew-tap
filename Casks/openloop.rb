@@ -14,7 +14,7 @@ cask "openloop" do
 
   postflight do
     system_command "/usr/bin/xattr",
-                   args: ["-dr", "com.apple.quarantine", "#{appdir}/OpenLoop.app"]
+                   args: ["-rd", "com.apple.quarantine", "#{appdir}/OpenLoop.app"]
     system_command "/bin/ln",
                    args: ["-sf", "#{appdir}/OpenLoop.app/Contents/MacOS/openloop", "/usr/local/bin/openloop"],
                    sudo: true
