@@ -13,8 +13,9 @@ cask "i4tools" do
   homepage "https://www.i4.cn/"
 
   livecheck do
-    url "https://www.i4.cn/pros/pc.html"
-    regex(/i4Tools[._-]v?(\d+(?:\.\d+)+)[._-]#{arch}\.dmg/i)
+    url "https://url.i4.cn/FFRBr2aa"
+    strategy :header_match
+    regex(/i4Tools[._-]v?(\d+(?:\.\d+)+)[._-]\w+\.dmg/i)
   end
 
   depends_on macos: :big_sur
@@ -22,4 +23,10 @@ cask "i4tools" do
   pkg "i4tools_#{arch}.pkg"
 
   uninstall pkgutil: "cn.i4tools.mac"
+
+  zap trash: [
+    "~/Library/Caches/cn.i4Tools.mac",
+    "~/Library/Preferences/cn.i4Tools.mac.plist",
+    "~/Library/Saved Application State/cn.i4Tools.mac.savedState",
+  ]
 end
