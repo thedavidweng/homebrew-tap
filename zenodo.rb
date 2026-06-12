@@ -11,7 +11,7 @@ class Zenodo < Formula
   on_macos do
     if Hardware::CPU.intel?
       url "https://github.com/thedavidweng/zenodo-cli/releases/download/v0.1.1/zenodo_0.1.1_darwin_amd64.tar.gz"
-      sha256 "e850f257a614081d8451db40a617d4fa4faa6143bf19bef6285a98527fb07c6c"
+      sha256 "237adb6862ac76d1ef8a9ae809a209a7d9c9100be711147e6502b9d3df3325f8"
 
       define_method(:install) do
         bin.install "zenodo"
@@ -20,7 +20,7 @@ class Zenodo < Formula
     end
     if Hardware::CPU.arm?
       url "https://github.com/thedavidweng/zenodo-cli/releases/download/v0.1.1/zenodo_0.1.1_darwin_arm64.tar.gz"
-      sha256 "95cc830837c2be429ef24a3676a09e52a4b883eda9b52817953e006edc0ed951"
+      sha256 "3d14a417a2d38fa8c8884308602d414ae44b393508744c14f338b48a5694b3b1"
 
       define_method(:install) do
         bin.install "zenodo"
@@ -32,7 +32,7 @@ class Zenodo < Formula
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       url "https://github.com/thedavidweng/zenodo-cli/releases/download/v0.1.1/zenodo_0.1.1_linux_amd64.tar.gz"
-      sha256 "eb53d48b65e96e649db6b60821b76fbd403363dcaa26540065995de844b5d871"
+      sha256 "400ecc9dac00b7a815f72465e41b8bd0130cd913fc6e291c976490238f2b799c"
       define_method(:install) do
         bin.install "zenodo"
         generate_completions_from_executable(bin/"zenodo", "completion")
@@ -40,7 +40,7 @@ class Zenodo < Formula
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
       url "https://github.com/thedavidweng/zenodo-cli/releases/download/v0.1.1/zenodo_0.1.1_linux_arm64.tar.gz"
-      sha256 "28c134316efc0b8f9bfd950ad16696b28452bda6da1f5ac0bb7394ffaf5f98aa"
+      sha256 "5bd4a0f5bf5213fb00a57081af0aa884b323213ba0cacae62f320f1bd154d77c"
       define_method(:install) do
         bin.install "zenodo"
         generate_completions_from_executable(bin/"zenodo", "completion")
