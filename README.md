@@ -18,6 +18,7 @@ Homebrew tap for my own apps, plus a small set of additional third-party apps I 
 - `Pixiv-SwiftUI`
 - `FluidVoice`
 - `WiiUDownloader`
+- `i4Tools`
 
 ## Install
 
@@ -97,6 +98,12 @@ brew install --cask thedavidweng/tap/fluidvoice
 brew install --cask thedavidweng/tap/wiiu-downloader
 ```
 
+### i4Tools
+
+```bash
+brew install --cask thedavidweng/tap/i4tools
+```
+
 ## Upgrade
 
 ### OpenKara
@@ -162,6 +169,13 @@ brew update
 brew upgrade --cask wiiu-downloader
 ```
 
+### i4Tools
+
+```bash
+brew update
+brew upgrade --cask i4tools
+```
+
 ## Local Development
 
 ```bash
@@ -174,6 +188,7 @@ brew audit --cask --strict --tap thedavidweng/homebrew-tap openloop
 brew audit --cask --strict --tap thedavidweng/homebrew-tap money
 brew audit --cask --strict --tap thedavidweng/homebrew-tap monarchmoney-cli
 brew audit --cask --strict --tap thedavidweng/homebrew-tap wiiu-downloader
+brew audit --cask --strict --tap thedavidweng/homebrew-tap i4tools
 ```
 
 If the app is blocked on first launch, remove quarantine manually:
@@ -186,6 +201,6 @@ xattr -rd com.apple.quarantine /Applications/Pixiv-SwiftUI.app
 
 Each cask in this tap can be maintained independently.
 
-This tap includes a scheduled sync workflow that checks upstream releases for all apps and updates the matching files in `Casks/` when needed. `OpenKara` and `OpenLoop` are my own apps in this tap. `Screenize`, `Pixiv-SwiftUI`, `FluidVoice`, and `WiiUDownloader` are additional third-party apps synced the same way directly from their latest GitHub releases, without requiring any changes from their maintainers. You can also run the workflow manually from the GitHub Actions page.
+This tap includes a scheduled sync workflow that checks upstream releases for all apps and updates the matching files in `Casks/` when needed. `OpenKara` and `OpenLoop` are my own apps in this tap. `Screenize`, `Pixiv-SwiftUI`, `FluidVoice`, `WiiUDownloader`, and `i4Tools` are additional third-party apps synced the same way directly from their latest GitHub releases, without requiring any changes from their maintainers. You can also run the workflow manually from the GitHub Actions page.
 
 `Money`, `Monarch Money CLI`, and `Flickr CLI` are published from their own repositories via GoReleaser, so their formulas/casks are updated by the release workflow in those repos instead of this tap's sync job.
