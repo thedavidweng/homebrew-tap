@@ -27,15 +27,15 @@ brew install --cask thedavidweng/tap/openloop
 | [Money](https://github.com/thedavidweng/money) | Local-first personal finance backend | cask |
 | [Canvas CLI](https://github.com/thedavidweng/canvas-cli) | Agent-friendly CLI for Canvas LMS | cask |
 | [Monarch Money CLI](https://github.com/thedavidweng/monarchmoney-cli) | CLI for Monarch Money | cask |
-| [Zenodo CLI](https://github.com/thedavidweng/zenodo-cli) | CLI for Zenodo deposit management | formula |
-| [Flickr CLI](https://github.com/thedavidweng/flickr-cli) | CLI for Flickr photo management | formula |
+| [Zenodo CLI](https://github.com/thedavidweng/zenodo-cli) | CLI for Zenodo deposit management | cask |
+| [Flickr CLI](https://github.com/thedavidweng/flickr-cli) | CLI for Flickr photo management | cask |
 
 ```bash
 brew install --cask thedavidweng/tap/money
 brew install --cask thedavidweng/tap/canvas
 brew install --cask thedavidweng/tap/monarchmoney-cli
-brew install --formula thedavidweng/tap/zenodo
-brew install --formula thedavidweng/tap/flickr
+brew install --cask thedavidweng/tap/zenodo
+brew install --cask thedavidweng/tap/flickr
 ```
 
 ## Third-Party Apps
@@ -59,18 +59,17 @@ brew install --cask thedavidweng/tap/notchprompt
 ## Upgrade
 
 ```bash
-brew update && brew upgrade --cask openkara
+brew update && brew upgrade --cask <cask>
 ```
 
 ## Local Development
 
 ```bash
 brew audit --cask --strict --tap thedavidweng/homebrew-tap <cask>
-brew audit --strict --tap thedavidweng/homebrew-tap <formula>
 ```
 
 ## How Updates Work
 
 - **My apps** (`OpenKara`, `OpenLoop`): updated directly in this repo.
-- **GoReleaser-managed** (`Money`, `Canvas CLI`, `Monarch Money CLI`, `Zenodo CLI`, `Flickr CLI`): published from their own repos via GoReleaser; casks/formulas are updated by the release workflow in those repos.
+- **GoReleaser-managed** (`Money`, `Canvas CLI`, `Monarch Money CLI`, `Zenodo CLI`, `Flickr CLI`): published from their own repos via GoReleaser; casks are updated by the release workflow in those repos.
 - **Third-party apps** (`Screenize`, `Pixiv-SwiftUI`, `FluidVoice`, `WiiUDownloader`, `NotchPrompt`): synced automatically from their latest GitHub releases via a scheduled workflow in this repo.
