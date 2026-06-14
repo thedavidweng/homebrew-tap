@@ -74,4 +74,5 @@ brew audit --cask --strict --tap thedavidweng/homebrew-tap <cask>
 
 - **My apps** (`OpenKara`, `OpenLoop`): updated directly in this repo.
 - **GoReleaser-managed** (`Money`, `Canvas CLI`, `Monarch Money CLI`, `Zenodo CLI`, `Flickr CLI`): published from their own repos via GoReleaser; casks are updated by the release workflow in those repos.
-- **Third-party apps** (`Screenize`, `Pixiv-SwiftUI`, `FluidVoice`, `WiiUDownloader`, `NotchPrompt`, `i4Tools`): synced automatically from their latest GitHub releases via a scheduled workflow in this repo.
+- **Third-party apps** (`Screenize`, `Pixiv-SwiftUI`, `FluidVoice`, `WiiUDownloader`, `NotchPrompt`): synced automatically from their latest GitHub releases via a scheduled workflow in this repo.
+- **i4Tools**: uses a redirect URL that always serves the latest version — no manual sync or version bumps needed. Upgrade with `brew upgrade --greedy i4tools`.

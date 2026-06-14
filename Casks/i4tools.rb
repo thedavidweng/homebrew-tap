@@ -21,7 +21,7 @@ cask "i4tools" do
 
   pkg "i4tools_#{arch}.pkg"
 
-  uninstall pkgutil: "cn.i4tools.mac"
+  uninstall pkgutil: "cn.i4Tools.mac"
 
   zap trash: [
     "~/Library/Caches/cn.i4Tools.mac",
