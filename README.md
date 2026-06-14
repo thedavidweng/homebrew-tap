@@ -14,39 +14,29 @@ brew tap thedavidweng/homebrew-tap
 |-----|-------------|------|
 | [OpenKara](https://github.com/thedavidweng/OpenKara) | Open source karaoke player for macOS | cask |
 | [OpenLoop](https://github.com/thedavidweng/OpenLoop) | AI music generation desktop application | cask |
-| [Money](https://github.com/thedavidweng/money) | Personal finance tracking | cask |
 
 ```bash
 brew install --cask thedavidweng/tap/openkara
 brew install --cask thedavidweng/tap/openloop
-brew install --cask thedavidweng/tap/money
 ```
-
-> If you installed `Money` as a formula previously, migrate with:
-> ```bash
-> brew uninstall --formula thedavidweng/tap/money
-> brew install --cask thedavidweng/tap/money
-> ```
 
 ## My CLI Tools
 
 | Tool | Description | Type |
 |------|-------------|------|
+| [Money](https://github.com/thedavidweng/money) | Local-first personal finance backend | cask |
 | [Canvas CLI](https://github.com/thedavidweng/canvas-cli) | Agent-friendly CLI for Canvas LMS | cask |
 | [Monarch Money CLI](https://github.com/thedavidweng/monarchmoney-cli) | CLI for Monarch Money | cask |
+| [Zenodo CLI](https://github.com/thedavidweng/zenodo-cli) | CLI for Zenodo deposit management | formula |
 | [Flickr CLI](https://github.com/thedavidweng/flickr-cli) | CLI for Flickr photo management | formula |
 
 ```bash
+brew install --cask thedavidweng/tap/money
 brew install --cask thedavidweng/tap/canvas
 brew install --cask thedavidweng/tap/monarchmoney-cli
+brew install --formula thedavidweng/tap/zenodo
 brew install --formula thedavidweng/tap/flickr
 ```
-
-> If you installed `Monarch Money CLI` as a formula previously, migrate with:
-> ```bash
-> brew uninstall --formula thedavidweng/tap/monarchmoney-cli
-> brew install --cask thedavidweng/tap/monarchmoney-cli
-> ```
 
 ## Third-Party Apps
 
@@ -81,6 +71,6 @@ brew audit --strict --tap thedavidweng/homebrew-tap <formula>
 
 ## How Updates Work
 
-- **My apps & CLI tools** (`OpenKara`, `OpenLoop`): updated directly in this repo.
-- **GoReleaser-managed** (`Money`, `Monarch Money CLI`, `Canvas CLI`, `Flickr CLI`): published from their own repos via GoReleaser; casks/formulas are updated by the release workflow in those repos.
+- **My apps** (`OpenKara`, `OpenLoop`): updated directly in this repo.
+- **GoReleaser-managed** (`Money`, `Canvas CLI`, `Monarch Money CLI`, `Zenodo CLI`, `Flickr CLI`): published from their own repos via GoReleaser; casks/formulas are updated by the release workflow in those repos.
 - **Third-party apps** (`Screenize`, `Pixiv-SwiftUI`, `FluidVoice`, `WiiUDownloader`, `NotchPrompt`): synced automatically from their latest GitHub releases via a scheduled workflow in this repo.
