@@ -47,6 +47,7 @@ brew install --cask thedavidweng/tap/flickr
 | [FluidVoice](https://github.com/altic-dev/FluidVoice) | Voice synthesis application | cask |
 | [WiiUDownloader](https://github.com/Xpl0itU/WiiUDownloader) | Download Wii U games from Nintendo's servers | cask |
 | [NotchPrompt](https://github.com/saif0200/notchprompt) | Menu bar teleprompter | cask |
+| [i4Tools](https://www.i4.cn/) | iOS device management tool | cask |
 
 ```bash
 brew install --cask thedavidweng/tap/screenize
@@ -54,6 +55,7 @@ brew install --cask thedavidweng/tap/pixiv-swiftui
 brew install --cask thedavidweng/tap/fluidvoice
 brew install --cask thedavidweng/tap/wiiu-downloader
 brew install --cask thedavidweng/tap/notchprompt
+brew install --cask thedavidweng/tap/i4tools
 ```
 
 ## Upgrade
@@ -73,3 +75,4 @@ brew audit --cask --strict --tap thedavidweng/homebrew-tap <cask>
 - **My apps** (`OpenKara`, `OpenLoop`): updated directly in this repo.
 - **GoReleaser-managed** (`Money`, `Canvas CLI`, `Monarch Money CLI`, `Zenodo CLI`, `Flickr CLI`): published from their own repos via GoReleaser; casks are updated by the release workflow in those repos.
 - **Third-party apps** (`Screenize`, `Pixiv-SwiftUI`, `FluidVoice`, `WiiUDownloader`, `NotchPrompt`): synced automatically from their latest GitHub releases via a scheduled workflow in this repo.
+- **i4Tools**: versioned with a livecheck that follows the redirect URL to detect new releases automatically. Updated via `brew bump-cask-pr` when `brew livecheck` reports a new version.
