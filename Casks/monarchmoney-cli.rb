@@ -3,17 +3,17 @@ cask "monarchmoney-cli" do
   version "0.5.0"
 
   on_macos do
-    sha256 "43bf33b8ffa14115f51741cad8253369aa47c8b94363ec80d8c4f10235210c2e"
+    sha256 "a0fc3383ef31f7961d18fb3d353421f45170871ba2a03cfbe7b2ab3b408a21a5"
     url "https://github.com/thedavidweng/monarchmoney-cli/releases/download/v#{version}/monarch_darwin_universal.tar.gz"
   end
 
   on_linux do
     on_intel do
-      sha256 "61ba7dd740196eadfa543b634cd484cffd7d868134365932a13f5eff6f92364e"
+      sha256 "a543c52eea2a9a890268287104ff904ce39d2dc210c2df9aeb6f3c36ab7d970c"
       url "https://github.com/thedavidweng/monarchmoney-cli/releases/download/v#{version}/monarch_linux_x86_64.tar.gz"
     end
     on_arm do
-      sha256 "8c099c69ce74ab461ab84dafd68c2fc54c97045498241b79575d1d770cb807d5"
+      sha256 "49004cdcad0436cd4cc9f6b90f1bbf5281fd1606e931f2230e371ac6d595b596"
       url "https://github.com/thedavidweng/monarchmoney-cli/releases/download/v#{version}/monarch_linux_arm64.tar.gz"
     end
   end
