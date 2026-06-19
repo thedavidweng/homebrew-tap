@@ -32,7 +32,6 @@ cask "monarchmoney-cli" do
     if OS.mac?
       system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/monarch"]
     end
-    generate_completions_from_executable(bin/"monarch", "completion")
   end
 
   # No zap stanza required
