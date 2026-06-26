@@ -6,11 +6,11 @@ cask "sdf-flash-gui" do
     url "https://github.com/thedavidweng/sdf-flash-gui/releases/download/v0.2.0/SDFFlashGUI_0.2.0_aarch64.dmg"
   end
   on_intel do
-    sha256 "ac3696dd208cbda247dbc05c3937e3cf90e367b0f994b25a068881aad9b4115c"
-    url "https://github.com/thedavidweng/sdf-flash-gui/releases/download/v0.2.0/SDFFlashGUI_0.2.0_x64.dmg"
+    sha256 "4440546e5e75079f1a4143519665cf8788ff63c0adc692ef751680ba77880d51"
+    url "https://github.com/thedavidweng/sdf-flash-gui/releases/download/v0.2.0/SDF.Flash.GUI_0.2.0_x64.dmg"
   end
 
-  name "SDFFlashGUI"
+  name "SDF Flash GUI"
   desc "Cross-platform GUI for flashing optical drives"
   homepage "https://github.com/thedavidweng/sdf-flash-gui"
 
@@ -19,10 +19,10 @@ cask "sdf-flash-gui" do
     strategy :github_latest
   end
 
-  app "SDFFlashGUI.app"
+  app "SDF Flash GUI.app"
 
   postflight do
     system_command "/usr/bin/xattr",
-                   args: ["-rd", "com.apple.quarantine", "#{appdir}/SDFFlashGUI.app"]
+                   args: ["-rd", "com.apple.quarantine", "#{appdir}/SDF Flash GUI.app"]
   end
 end
