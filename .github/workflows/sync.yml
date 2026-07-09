@@ -32,6 +32,9 @@ jobs:
       - name: Set up Homebrew tap
         run: brew tap thedavidweng/homebrew-tap "$GITHUB_WORKSPACE"
 
+      - name: Trust Homebrew tap
+        run: brew trust thedavidweng/tap
+
       - name: Refresh local main
         run: |
           git fetch origin main
