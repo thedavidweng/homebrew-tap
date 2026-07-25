@@ -1,13 +1,13 @@
 cask "sdf-flash-gui" do
-  version "0.4.0"
+  version "1.0.0"
 
   on_arm do
-    sha256 "63ea0e2df7aa53de0d4d5cc7f80a8725bcf56ffdca0862b3b6148268d51708a7"
-    url "https://github.com/thedavidweng/sdf-flash-gui/releases/download/v#{version}/SDF.Flash.GUI_#{version}_aarch64.dmg"
+    sha256 "56c32ebc97324be2f6d808a69c9be3303df2d63ec02bc227ffd4fd5c9ca7e2f5"
+    url "https://github.com/thedavidweng/sdf-flash-gui/releases/download/v1.0.0/SDF.Flash.GUI_1.0.0_aarch64.dmg"
   end
   on_intel do
-    sha256 "ae916882801c358c67eb5e41a8d8aff3ba5bc9e40985cb5f6d64d2f7804b564c"
-    url "https://github.com/thedavidweng/sdf-flash-gui/releases/download/v#{version}/SDF.Flash.GUI_#{version}_x64.dmg"
+    sha256 "ec3b8a2712051f1dc5ca0341aba7dbd9e79c1ab50deb76b39717bf3ee61d313f"
+    url "https://github.com/thedavidweng/sdf-flash-gui/releases/download/v1.0.0/SDF.Flash.GUI_1.0.0_x64.dmg"
   end
 
   name "SDF Flash GUI"
