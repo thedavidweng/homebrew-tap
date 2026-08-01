@@ -739,5 +739,60 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
         self.assertIn("404", stderr.getvalue())
 
 
+class CaskUrlVersioningTests(unittest.TestCase):
+    """Homebrew treats URLs without #{version} as unversioned and requires sha256 :no_check."""
+
+    def test_github_release_download_urls_interpolate_version(self):
+        casks_dir = ROOT / "Casks"
+        offenders = []
+
+        for cask_path in sorted(casks_dir.glob("*.rb")):
+            text = cask_path.read_text(encoding="utf-8")
+            for line_number, line in enumerate(text.splitlines(), start=1):
+                stripped = line.strip()
+                if not stripped.startswith("url "):
+                    continue
+                if "releases/download/" not in stripped:
+                    continue
+                if "#{version}" in stripped:
+                    continue
+                offenders.append(f"{cask_path.name}:{line_number}: {stripped}")
+
+        self.assertEqual(
+            offenders,
+            [],
+            "GitHub release download URLs must interpolate #{version}; "
+            "hardcoded versions fail `brew audit --strict` with "
+            "'Use sha256 :no_check when URL is unversioned'. Offenders:\n"
+            + "\n".join(offenders),
+        )
+
+
+class SyncWorkflowAuditScopeTests(unittest.TestCase):
+    """Sync Releases must not audit the entire tap via --tap (Homebrew audits all casks)."""
+
+    WORKFLOW_PATH = ROOT / ".github" / "workflows" / "sync.yml"
+    SYNCED_CASKS = ("pixiv-swiftui", "openkara", "screenize", "fluidvoice")
+
+    def test_audit_step_targets_only_synced_casks_without_tap_flag(self):
+        workflow = self.WORKFLOW_PATH.read_text(encoding="utf-8")
+        self.assertIn("name: Audit casks", workflow)
+
+        audit_section = workflow.split("name: Audit casks", 1)[1].split("name: Commit and push changes", 1)[0]
+        self.assertNotIn(
+            "--tap",
+            audit_section,
+            "`brew audit --tap <tap>` audits every cask in the tap and lets unrelated "
+            "cask failures block Sync Releases",
+        )
+
+        for cask_name in self.SYNCED_CASKS:
+            self.assertIn(
+                f"thedavidweng/tap/{cask_name}",
+                audit_section,
+                f"Audit step must cover synced cask {cask_name}",
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
