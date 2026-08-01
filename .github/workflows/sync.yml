@@ -48,11 +48,15 @@ jobs:
       - name: Run sync tests
         run: python -m unittest tests.test_sync_cask_release
 
+      # Do not pass --tap here: `brew audit --tap <tap>` audits every cask in the
+      # tap, so unrelated cask failures (e.g. sdf-flash-gui) block Sync Releases.
       - name: Audit casks
         run: |
-          brew audit --cask --strict --tap thedavidweng/homebrew-tap pixiv-swiftui
-          brew audit --cask --strict --tap thedavidweng/homebrew-tap openkara
-          brew audit --cask --strict --tap thedavidweng/homebrew-tap screenize
+          brew audit --cask --strict \
+            thedavidweng/tap/pixiv-swiftui \
+            thedavidweng/tap/openkara \
+            thedavidweng/tap/screenize \
+            thedavidweng/tap/fluidvoice
 
       - name: Commit and push changes
         run: |
