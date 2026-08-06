@@ -1,9 +1,9 @@
 cask "openkara" do
   arch arm: "aarch64", intel: "x64"
 
-  version "0.12.0"
-  sha256 arm:   "6e03e1213d33a18d8f3a5df4d0783a21c2df7d27b644e30110a0f80e41dba173",
-         intel: "043be9dfe54697b0d048574e7c729940b87b99686a73def60e21441ee55f4db0"
+  version "0.12.1"
+  sha256 arm:   "c13131b9a04b159a9d816b3d9596ada3d2fae18ac4aeb9dc92f5e40ad8f7de3f",
+         intel: "9383f4c8b5b3681cba58a5cdb6538e41834b471ec810e85b3f9712cb04ad4b93"
 
   url "https://github.com/thedavidweng/OpenKara/releases/download/v#{version}/OpenKara_#{version}_#{arch}.dmg"
   name "OpenKara"
