@@ -12,12 +12,12 @@ cask "openloop" do
 
   app "OpenLoop.app"
 
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-rd", "com.apple.quarantine", "#{appdir}/OpenLoop.app"]
-    system_command "/bin/ln",
-                   args: ["-sf", "#{appdir}/OpenLoop.app/Contents/MacOS/openloop", "/usr/local/bin/openloop"],
-                   sudo: true
+  postflight_steps do
+    run "/usr/bin/xattr",
+        args: ["-rd", "com.apple.quarantine", "{{appdir}}/OpenLoop.app"]
+    run "/bin/ln",
+        args: ["-sf", "{{appdir}}/OpenLoop.app/Contents/MacOS/openloop", "/usr/local/bin/openloop"],
+        sudo: true
   end
 
   zap trash: [

@@ -21,9 +21,9 @@ cask "notchprompt" do
 
   app "notchprompt.app"
 
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-rd", "com.apple.quarantine", "#{appdir}/notchprompt.app"]
+  postflight_steps do
+    run "/usr/bin/xattr",
+        args: ["-rd", "com.apple.quarantine", "{{appdir}}/notchprompt.app"]
   end
 
   zap trash: [

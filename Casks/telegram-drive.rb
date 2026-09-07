@@ -22,9 +22,9 @@ cask "telegram-drive" do
 
   app "Telegram Drive.app"
 
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-rd", "com.apple.quarantine", "#{appdir}/Telegram Drive.app"]
+  postflight_steps do
+    run "/usr/bin/xattr",
+        args: ["-rd", "com.apple.quarantine", "{{appdir}}/Telegram Drive.app"]
   end
 
   zap trash: [

@@ -10,15 +10,15 @@ cask "openkara" do
   desc "Open source karaoke player for macOS"
   homepage "https://github.com/thedavidweng/OpenKara"
 
-  app "OpenKara.app"
-
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-rd", "com.apple.quarantine", "#{appdir}/OpenKara.app"]
-  end
-
   livecheck do
     url :url
     strategy :github_latest
+  end
+
+  app "OpenKara.app"
+
+  postflight_steps do
+    run "/usr/bin/xattr",
+        args: ["-rd", "com.apple.quarantine", "{{appdir}}/OpenKara.app"]
   end
 end
