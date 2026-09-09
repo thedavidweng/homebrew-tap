@@ -858,6 +858,58 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
             self.assertIn("Failed pixiv-swiftui", stderr.getvalue())
             self.assertIn("Failed apps: pixiv-swiftui", stderr.getvalue())
 
+    def test_main_continues_past_network_error_and_reports_it(self):
+        # URLError（DNS / 连接 / TLS 失败）同样只记为单 app 失败，
+        # 不能抛异常中断后面的 app。
+        module = load_module()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir_path = pathlib.Path(tmpdir)
+            pixiv_cask = tmpdir_path / "pixiv-swiftui.rb"
+            openkara_cask = tmpdir_path / "openkara.rb"
+            shutil.copyfile(CASK_PATH, pixiv_cask)
+            shutil.copyfile(OPENKARA_CASK_PATH, openkara_cask)
+            stdout = io.StringIO()
+            stderr = io.StringIO()
+
+            def fetch_release(app):
+                if app["repo_slug"] == module.APPS["pixiv-swiftui"]["repo_slug"]:
+                    raise urllib.error.URLError("DNS resolution failed")
+                return sample_openkara_payload(version="1.2.3")
+
+            with mock.patch.dict(
+                module.APPS,
+                {
+                    "pixiv-swiftui": {**module.APPS["pixiv-swiftui"], "cask_path": pixiv_cask},
+                    "openkara": {**module.APPS["openkara"], "cask_path": openkara_cask},
+                },
+            ):
+                with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                    exit_code = module.main(
+                        ["--app", "pixiv-swiftui", "--app", "openkara"],
+                        fetch_release=fetch_release,
+                    )
+
+            self.assertNotEqual(exit_code, 0)
+            self.assertIn('version "1.2.3"', openkara_cask.read_text(encoding="utf-8"))
+            self.assertIn("Failed pixiv-swiftui", stderr.getvalue())
+            self.assertIn("Failed apps: pixiv-swiftui", stderr.getvalue())
+
+    def test_main_rejects_cask_override_with_multiple_apps(self):
+        # 同一个 --cask 文件会被每个 app 复用，多 app 合用会写串文件，
+        # 必须在参数校验阶段拒绝；单 app 覆盖行为保持可用。
+        module = load_module()
+        stderr = io.StringIO()
+
+        with contextlib.redirect_stderr(stderr):
+            with self.assertRaises(SystemExit) as ctx:
+                module.main(
+                    ["--app", "pixiv-swiftui", "--app", "openkara", "--cask", "/tmp/x.rb"]
+                )
+
+        self.assertNotEqual(ctx.exception.code, 0)
+        self.assertIn("--cask", stderr.getvalue())
+
 
 class CaskUrlVersioningTests(unittest.TestCase):
     """Homebrew treats URLs without #{version} as unversioned and requires sha256 :no_check."""

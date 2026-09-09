@@ -251,6 +251,11 @@ def sync_app(app_name, cask_override=None, fetch_release=fetch_latest_release, d
             return 0
         print(f"Error: {exc}", file=sys.stderr)
         return 1
+    except urllib.error.URLError as exc:
+        # HTTPError 已在上面处理；这里接 DNS / 连接 / TLS 等纯网络失败，
+        # 同样记为单 app 失败并返回 1，让 main() 继续跑后面的 app。
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
     except (ValueError, json.JSONDecodeError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
@@ -283,6 +288,12 @@ def main(argv=None, fetch_release=fetch_latest_release):
     args = parser.parse_args(argv)
 
     apps = args.app or ["pixiv-swiftui"]
+
+    if args.cask and len(apps) > 1:
+        # 同一个 --cask 覆盖文件会被逐个 app 复用：第一个 app 失败后继续跑
+        # 第二个 app 时，会把第二个 app 的版本写进第一个 app 的文件。
+        # 多 app 时直接拒绝，保持单 app 覆盖行为不变。
+        parser.error("--cask 不能和多个 --app 合用：覆盖文件会被每个 app 复用")
 
     failed_apps = []
     for app_name in apps:
