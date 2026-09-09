@@ -185,9 +185,9 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
     def test_openkara_cask_has_postflight_quarantine_removal(self):
         cask_text = OPENKARA_CASK_PATH.read_text(encoding="utf-8")
 
-        self.assertIn("postflight do", cask_text)
-        self.assertIn('system_command "/usr/bin/xattr"', cask_text)
-        self.assertIn('"#{appdir}/OpenKara.app"', cask_text)
+        self.assertIn("postflight_steps do", cask_text)
+        self.assertIn('run "/usr/bin/xattr"', cask_text)
+        self.assertIn('"{{appdir}}/OpenKara.app"', cask_text)
 
     def test_extract_release_info_normalizes_tag_and_digests(self):
         module = load_module()
@@ -289,9 +289,9 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
             },
         )
 
-        self.assertIn("postflight do", updated)
-        self.assertIn('system_command "/usr/bin/xattr"', updated)
-        self.assertIn('"#{appdir}/OpenKara.app"', updated)
+        self.assertIn("postflight_steps do", updated)
+        self.assertIn('run "/usr/bin/xattr"', updated)
+        self.assertIn('"{{appdir}}/OpenKara.app"', updated)
 
     def test_update_cask_contents_handles_formatting_changes(self):
         module = load_module()
@@ -737,6 +737,126 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
         self.assertNotEqual(exit_code, 0)
         self.assertEqual(stdout.getvalue(), "")
         self.assertIn("404", stderr.getvalue())
+
+
+    def test_fluidvoice_config_has_tag_pattern_filtering_windows_tags(self):
+        module = load_module()
+
+        pattern = module.APPS["fluidvoice"].get("tag_pattern")
+        self.assertIsNotNone(pattern)
+
+        import re
+
+        compiled = re.compile(pattern)
+        self.assertTrue(compiled.match("v1.6.9"))
+        self.assertFalse(compiled.match("windows-v0.0.10"))
+        self.assertFalse(compiled.match("windows-latest"))
+        self.assertFalse(compiled.match("windows-runtime-parakeet-v0.4.0-fv1"))
+
+    def test_select_release_for_app_skips_windows_tags(self):
+        module = load_module()
+
+        releases = [
+            {"tag_name": "windows-v0.0.10", "draft": False},
+            {"tag_name": "windows-latest", "draft": False},
+            {"tag_name": "v1.6.9", "draft": False},
+            {"tag_name": "v1.6.8", "draft": False},
+        ]
+
+        selected = module.select_release_for_app(releases, module.APPS["fluidvoice"])
+
+        self.assertEqual(selected["tag_name"], "v1.6.9")
+
+    def test_select_release_for_app_skips_drafts(self):
+        module = load_module()
+
+        releases = [
+            {"tag_name": "v9.9.9", "draft": True},
+            {"tag_name": "v1.6.9", "draft": False},
+        ]
+
+        selected = module.select_release_for_app(releases, module.APPS["fluidvoice"])
+
+        self.assertEqual(selected["tag_name"], "v1.6.9")
+
+    def test_select_release_for_app_raises_when_no_match(self):
+        module = load_module()
+
+        with self.assertRaises(ValueError):
+            module.select_release_for_app(
+                [{"tag_name": "windows-v0.0.10", "draft": False}],
+                module.APPS["fluidvoice"],
+            )
+
+    def test_fetch_latest_release_uses_release_list_for_tag_pattern_apps(self):
+        module = load_module()
+
+        seen_urls = []
+
+        def fake_get_json(url):
+            seen_urls.append(url)
+            return [
+                {"tag_name": "windows-v0.0.10", "draft": False},
+                {"tag_name": "v1.6.9", "draft": False},
+            ]
+
+        with mock.patch.object(module, "_github_get_json", side_effect=fake_get_json):
+            release = module.fetch_latest_release(module.APPS["fluidvoice"])
+
+        self.assertEqual(release["tag_name"], "v1.6.9")
+        self.assertTrue(any("/releases?" in url for url in seen_urls))
+        self.assertFalse(any(url.endswith("/releases/latest") for url in seen_urls))
+
+    def test_fetch_latest_release_uses_latest_endpoint_without_tag_pattern(self):
+        module = load_module()
+
+        with mock.patch.object(
+            module, "_github_get_json", return_value={"tag_name": "v0.13.0"}
+        ) as get_json:
+            release = module.fetch_latest_release(module.APPS["pixiv-swiftui"])
+
+        self.assertEqual(release["tag_name"], "v0.13.0")
+        get_json.assert_called_once_with(
+            "https://api.github.com/repos/Eslzzyl/Pixiv-SwiftUI/releases/latest"
+        )
+
+    def test_main_continues_past_failing_app_and_reports_it(self):
+        module = load_module()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir_path = pathlib.Path(tmpdir)
+            pixiv_cask = tmpdir_path / "pixiv-swiftui.rb"
+            openkara_cask = tmpdir_path / "openkara.rb"
+            shutil.copyfile(CASK_PATH, pixiv_cask)
+            shutil.copyfile(OPENKARA_CASK_PATH, openkara_cask)
+            stdout = io.StringIO()
+            stderr = io.StringIO()
+
+            def fetch_release(app):
+                if app["repo_slug"] == module.APPS["pixiv-swiftui"]["repo_slug"]:
+                    bad_payload = sample_payload()
+                    bad_payload["assets"][1] = {"name": "Pixiv-SwiftUI-x86_64.dmg"}
+                    return bad_payload
+                return sample_openkara_payload(version="1.2.3")
+
+            with mock.patch.dict(
+                module.APPS,
+                {
+                    "pixiv-swiftui": {**module.APPS["pixiv-swiftui"], "cask_path": pixiv_cask},
+                    "openkara": {**module.APPS["openkara"], "cask_path": openkara_cask},
+                },
+            ):
+                with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                    exit_code = module.main(
+                        ["--app", "pixiv-swiftui", "--app", "openkara"],
+                        fetch_release=fetch_release,
+                    )
+
+            # 第一个 app 失败也要继续跑第二个，最后整体返回非零
+            self.assertNotEqual(exit_code, 0)
+            self.assertIn('version "1.2.3"', openkara_cask.read_text(encoding="utf-8"))
+            self.assertIn("Failed pixiv-swiftui", stderr.getvalue())
+            self.assertIn("Failed apps: pixiv-swiftui", stderr.getvalue())
 
 
 class CaskUrlVersioningTests(unittest.TestCase):

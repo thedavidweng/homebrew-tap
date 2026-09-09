@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import pathlib
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -37,6 +38,10 @@ APPS = {
         "repo_slug": "altic-dev/FluidVoice",
         "cask_path": ROOT / "Casks" / "fluidvoice.rb",
         "asset_name_template": "Fluid-oss-{version}.dmg",
+        # 上游仓库同时发布 Windows 系 tag（windows-*、windows-latest），而
+        # /releases/latest 按发布时间取最新，会命中 Windows 专属 release。
+        # 只接受稳定版 macOS tag，避免把 cask 指向含 .exe 的 release。
+        "tag_pattern": r"^v\d+\.\d+\.\d+$",
     },
     "openloop": {
         "repo_slug": "thedavidweng/OpenLoop",
@@ -50,7 +55,7 @@ class ReleaseError(ValueError):
     pass
 
 
-def fetch_latest_release(app):
+def _github_headers():
     headers = {
         "Accept": "application/vnd.github+json",
         "User-Agent": "pixiv-swiftui-tap-sync",
@@ -58,13 +63,59 @@ def fetch_latest_release(app):
     github_token = os.environ.get("GITHUB_TOKEN")
     if github_token:
         headers["Authorization"] = f"Bearer {github_token}"
+    return headers
 
-    request = urllib.request.Request(
-        f"https://api.github.com/repos/{app['repo_slug']}/releases/latest",
-        headers=headers,
-    )
+
+def _github_get_json(url):
+    request = urllib.request.Request(url, headers=_github_headers())
     with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT_SECONDS) as response:
         return json.load(response)
+
+
+def select_release_for_app(releases, app):
+    """从 release 列表中挑选第一个符合 app 要求的非草稿 release。"""
+    pattern = app.get("tag_pattern")
+    compiled = re.compile(pattern) if pattern else None
+    if not isinstance(releases, list):
+        raise ReleaseError("malformed releases list")
+    for release in releases:
+        if not isinstance(release, dict) or release.get("draft"):
+            continue
+        tag_name = release.get("tag_name")
+        if not isinstance(tag_name, str) or not tag_name:
+            continue
+        if compiled is not None and not compiled.match(tag_name):
+            continue
+        return release
+    raise ReleaseError("no matching release found")
+
+
+def fetch_releases(app, per_page=100, max_pages=5):
+    releases = []
+    for page in range(1, max_pages + 1):
+        url = (
+            f"https://api.github.com/repos/{app['repo_slug']}/releases"
+            f"?per_page={per_page}&page={page}"
+        )
+        batch = _github_get_json(url)
+        if not isinstance(batch, list):
+            raise ReleaseError("malformed releases list")
+        releases.extend(batch)
+        if len(batch) < per_page:
+            break
+    return releases
+
+
+def fetch_latest_release(app):
+    # 配置了 tag_pattern 的 app（如 fluidvoice）不能直接用 /releases/latest：
+    # 该端点按发布时间取最新，上游一旦发布 Windows 专属 tag 就会误命中。
+    # 改为拉取 release 列表并按 tag 正则挑选。
+    if app.get("tag_pattern"):
+        releases = fetch_releases(app)
+        return select_release_for_app(releases, app)
+    return _github_get_json(
+        f"https://api.github.com/repos/{app['repo_slug']}/releases/latest"
+    )
 
 
 def normalize_version(tag_name):
@@ -233,6 +284,7 @@ def main(argv=None, fetch_release=fetch_latest_release):
 
     apps = args.app or ["pixiv-swiftui"]
 
+    failed_apps = []
     for app_name in apps:
         exit_code = sync_app(
             app_name,
@@ -241,7 +293,14 @@ def main(argv=None, fetch_release=fetch_latest_release):
             dry_run=args.dry_run,
         )
         if exit_code != 0:
-            return exit_code
+            # 单个 app 失败只记录并继续，避免一个 app 挂掉整单
+            # （如 fluidvoice 曾因上游 Windows tag 导致整单全挂）。
+            print(f"Failed {app_name}", file=sys.stderr)
+            failed_apps.append(app_name)
+
+    if failed_apps:
+        print(f"Failed apps: {', '.join(failed_apps)}", file=sys.stderr)
+        return 1
 
     return 0
 
