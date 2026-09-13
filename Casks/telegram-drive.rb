@@ -18,7 +18,8 @@ cask "telegram-drive" do
   end
 
   auto_updates true
-  depends_on macos: :catalina
+  # Tauri 2.11/objc2 uses WebKit APIs unavailable on Catalina and panics at launch.
+  depends_on macos: :big_sur
 
   app "Telegram Drive.app"
 
