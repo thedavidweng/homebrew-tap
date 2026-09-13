@@ -4,15 +4,15 @@ cask "fluidvoice" do
 
   url "https://github.com/altic-dev/FluidVoice/releases/download/v#{version}/Fluid-oss-#{version}.dmg"
   name "FluidVoice"
-  desc "Fast offline dictation app for macOS"
+  desc "Fast offline dictation app"
   homepage "https://github.com/altic-dev/FluidVoice"
-
-  depends_on macos: :sequoia
-
-  app "FluidVoice.app"
 
   livecheck do
     url :url
     strategy :github_latest
   end
+
+  depends_on macos: :sequoia
+
+  app "FluidVoice.app"
 end

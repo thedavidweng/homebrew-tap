@@ -3,24 +3,23 @@ cask "money" do
   version "0.4.0"
 
   on_macos do
-    on_intel do
-      sha256 "938074f0f8cd06c9eca4965685ec8a4ff391269573d30afc33fc0f2ff41e8772"
-      url "https://github.com/thedavidweng/money/releases/download/v#{version}/money_#{version}_darwin_amd64.tar.gz"
-    end
     on_arm do
       sha256 "fbd9b1fbbf5e96667f1b51bbc7c3b40a16ca1f71c8599fce8ecaefd0ec720fe6"
       url "https://github.com/thedavidweng/money/releases/download/v#{version}/money_#{version}_darwin_arm64.tar.gz"
     end
-  end
-
-  on_linux do
     on_intel do
-      sha256 "2e16f0fd337ecf424a897cd525fabb4e60f1d75aa1adb8418e8a9ff1f360ed7b"
-      url "https://github.com/thedavidweng/money/releases/download/v#{version}/money_#{version}_linux_amd64.tar.gz"
+      sha256 "938074f0f8cd06c9eca4965685ec8a4ff391269573d30afc33fc0f2ff41e8772"
+      url "https://github.com/thedavidweng/money/releases/download/v#{version}/money_#{version}_darwin_amd64.tar.gz"
     end
+  end
+  on_linux do
     on_arm do
       sha256 "549f7dbc022b370e75d8d4d8caa1509b112b89ecdd9beb71e4cc2c3e985dacf2"
       url "https://github.com/thedavidweng/money/releases/download/v#{version}/money_#{version}_linux_arm64.tar.gz"
+    end
+    on_intel do
+      sha256 "2e16f0fd337ecf424a897cd525fabb4e60f1d75aa1adb8418e8a9ff1f360ed7b"
+      url "https://github.com/thedavidweng/money/releases/download/v#{version}/money_#{version}_linux_amd64.tar.gz"
     end
   end
 
@@ -41,5 +40,4 @@ cask "money" do
   end
 
   # No zap stanza required
-
 end

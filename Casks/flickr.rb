@@ -3,24 +3,23 @@ cask "flickr" do
   version "0.3.1"
 
   on_macos do
-    on_intel do
-      sha256 "6537d9a1da4e255d62e326c937a939004cef84c3dc36e82a7923525d759809ab"
-      url "https://github.com/thedavidweng/flickr-cli/releases/download/v#{version}/flickr_#{version}_darwin_amd64.tar.gz"
-    end
     on_arm do
       sha256 "200b1db8d16b62244065a9defd05bbd68b6d79ed4570384c7650ac4b1db6f600"
       url "https://github.com/thedavidweng/flickr-cli/releases/download/v#{version}/flickr_#{version}_darwin_arm64.tar.gz"
     end
-  end
-
-  on_linux do
     on_intel do
-      sha256 "288bb3a2029525b2443ed1236a63eef3b51e8c75b03eb678001eb51937dad7b8"
-      url "https://github.com/thedavidweng/flickr-cli/releases/download/v#{version}/flickr_#{version}_linux_amd64.tar.gz"
+      sha256 "6537d9a1da4e255d62e326c937a939004cef84c3dc36e82a7923525d759809ab"
+      url "https://github.com/thedavidweng/flickr-cli/releases/download/v#{version}/flickr_#{version}_darwin_amd64.tar.gz"
     end
+  end
+  on_linux do
     on_arm do
       sha256 "3413e8ae58d15e5f640aaec7b410e0bb7a30c3bcfd06f25c0c6b9e9ca26f28c6"
       url "https://github.com/thedavidweng/flickr-cli/releases/download/v#{version}/flickr_#{version}_linux_arm64.tar.gz"
+    end
+    on_intel do
+      sha256 "288bb3a2029525b2443ed1236a63eef3b51e8c75b03eb678001eb51937dad7b8"
+      url "https://github.com/thedavidweng/flickr-cli/releases/download/v#{version}/flickr_#{version}_linux_amd64.tar.gz"
     end
   end
 
@@ -33,11 +32,9 @@ cask "flickr" do
   end
 
   binary "flickr"
-
   generate_completions_from_executable "flickr", "completion",
-    shell_parameter_format: :cobra,
-    shells: [:bash, :zsh, :fish]
+                                       shell_parameter_format: :cobra,
+                                       shells:                 [:bash, :zsh, :fish]
 
   # No zap stanza required
-
 end
