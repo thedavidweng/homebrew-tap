@@ -23,7 +23,7 @@ cask "openloop" do
   zap trash: [
     "~/Library/Application Support/openloop",
     "~/Library/Application Support/OpenLoop",
-    "~/Music/OpenLoop",
     "~/Library/Logs/openloop",
+    "~/Music/OpenLoop",
   ]
 end

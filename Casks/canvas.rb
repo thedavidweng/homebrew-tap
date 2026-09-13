@@ -3,29 +3,28 @@ cask "canvas" do
   version "0.4.0"
 
   on_macos do
-    on_intel do
-      sha256 "7a49e398cf697c45654af47f894bf1b82fe00c7cef4ece1fcd57bca5bf7ca9e9"
-      url "https://github.com/thedavidweng/canvas-cli/releases/download/v#{version}/canvas_#{version}_darwin_amd64.tar.gz"
-    end
     on_arm do
       sha256 "006f396b094e5f7169a05fdb08b028bc3227901f75338021396514024c003b1a"
       url "https://github.com/thedavidweng/canvas-cli/releases/download/v#{version}/canvas_#{version}_darwin_arm64.tar.gz"
     end
-  end
-
-  on_linux do
     on_intel do
-      sha256 "b3d9e2300bef6869e38c9edc244a11b80415a91413344269c72ed69f93b51054"
-      url "https://github.com/thedavidweng/canvas-cli/releases/download/v#{version}/canvas_#{version}_linux_amd64.tar.gz"
+      sha256 "7a49e398cf697c45654af47f894bf1b82fe00c7cef4ece1fcd57bca5bf7ca9e9"
+      url "https://github.com/thedavidweng/canvas-cli/releases/download/v#{version}/canvas_#{version}_darwin_amd64.tar.gz"
     end
+  end
+  on_linux do
     on_arm do
       sha256 "f7a930d6b4f1d1b7a447426f5dfafe90b97862c67664c58600e9b605cbf50a56"
       url "https://github.com/thedavidweng/canvas-cli/releases/download/v#{version}/canvas_#{version}_linux_arm64.tar.gz"
     end
+    on_intel do
+      sha256 "b3d9e2300bef6869e38c9edc244a11b80415a91413344269c72ed69f93b51054"
+      url "https://github.com/thedavidweng/canvas-cli/releases/download/v#{version}/canvas_#{version}_linux_amd64.tar.gz"
+    end
   end
 
   name "canvas"
-  desc "Agent-friendly CLI for Canvas LMS course management, assignments, submissions, and more"
+  desc "Agent-friendly CLI for Canvas LMS course and assignment management"
   homepage "https://github.com/thedavidweng/canvas-cli"
 
   livecheck do
@@ -33,11 +32,9 @@ cask "canvas" do
   end
 
   binary "canvas"
-
   generate_completions_from_executable "canvas", "completion",
-    shell_parameter_format: :cobra,
-    shells: [:bash, :zsh, :fish]
+                                       shell_parameter_format: :cobra,
+                                       shells:                 [:bash, :zsh, :fish]
 
   # No zap stanza required
-
 end

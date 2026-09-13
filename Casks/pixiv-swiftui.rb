@@ -10,14 +10,14 @@ cask "pixiv-swiftui" do
   desc "SwiftUI-based Pixiv third-party client"
   homepage "https://github.com/Eslzzyl/Pixiv-SwiftUI"
 
-  depends_on macos: :sonoma
-
-  app "Pixiv-SwiftUI.app"
-
   livecheck do
     url :url
     strategy :github_latest
   end
+
+  depends_on macos: :sonoma
+
+  app "Pixiv-SwiftUI.app"
 
   caveats do
     <<~EOS

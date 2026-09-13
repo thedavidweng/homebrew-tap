@@ -7,13 +7,15 @@ cask "openkara" do
 
   url "https://github.com/thedavidweng/OpenKara/releases/download/v#{version}/OpenKara_#{version}_#{arch}.dmg"
   name "OpenKara"
-  desc "Open source karaoke player for macOS"
+  desc "Open-source karaoke player"
   homepage "https://github.com/thedavidweng/OpenKara"
 
   livecheck do
     url :url
     strategy :github_latest
   end
+
+  depends_on :macos
 
   app "OpenKara.app"
 
