@@ -48,6 +48,11 @@ APPS = {
         "cask_path": ROOT / "Casks" / "openloop.rb",
         "asset_name_template": "OpenLoop_{version}_aarch64.dmg",
     },
+    "apple-say": {
+        "repo_slug": "thedavidweng/apple-say",
+        "cask_path": ROOT / "Casks" / "apple-say.rb",
+        "asset_name": "Apple-Say.dmg",
+    },
 }
 
 
@@ -246,7 +251,7 @@ def sync_app(app_name, cask_override=None, fetch_release=fetch_latest_release, d
         release = extract_release_info(payload, app)
     except urllib.error.HTTPError as exc:
         exc.close()
-        if exc.code == 404 and app_name == "openkara":
+        if exc.code == 404 and app_name in ("openkara", "apple-say"):
             print(f"Skipping {app_name}: no published release found")
             return 0
         print(f"Error: {exc}", file=sys.stderr)

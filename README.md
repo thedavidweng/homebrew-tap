@@ -12,10 +12,12 @@ brew tap thedavidweng/homebrew-tap
 
 | App | Description | Type |
 |-----|-------------|------|
+| [Apple Say](https://github.com/thedavidweng/apple-say) | Native macOS text-to-speech editor and audio exporter | cask |
 | [OpenKara](https://github.com/thedavidweng/OpenKara) | Open source karaoke player for macOS | cask |
 | [OpenLoop](https://github.com/thedavidweng/OpenLoop) | AI music generation desktop application | cask |
 
 ```bash
+brew install --cask thedavidweng/tap/apple-say
 brew install --cask thedavidweng/tap/openkara
 brew install --cask thedavidweng/tap/openloop
 ```
@@ -72,7 +74,7 @@ brew audit --cask --strict --tap thedavidweng/homebrew-tap <cask>
 
 ## How Updates Work
 
-- **My apps** (`OpenKara`, `OpenLoop`): updated directly in this repo.
+- **My apps** (`Apple Say`, `OpenKara`, `OpenLoop`): updated directly in this repo.
 - **GoReleaser-managed** (`Money`, `Canvas CLI`, `Monarch Money CLI`, `Zenodo CLI`, `Flickr CLI`): published from their own repos via GoReleaser; casks are updated by the release workflow in those repos.
 - **Third-party apps** (`Screenize`, `Pixiv-SwiftUI`, `FluidVoice`, `WiiUDownloader`, `NotchPrompt`): synced automatically from their latest GitHub releases via a scheduled workflow in this repo.
 - **i4Tools**: versioned with a livecheck that follows the redirect URL to detect new releases automatically. Updated via `brew bump-cask-pr` when `brew livecheck` reports a new version.
