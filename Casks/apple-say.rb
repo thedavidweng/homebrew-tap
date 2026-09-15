@@ -1,6 +1,6 @@
 cask "apple-say" do
-  version "1.0.0"
-  sha256 "304411b917d6458bf71a0ea52c4a517697d0cc948389d120017e21be046360c2"
+  version "1.1.0"
+  sha256 "a3ea2bdbe84c52902d851502bb88daa4c3d9845144ccf9c918f2bb6a026b4a76"
 
   url "https://github.com/thedavidweng/apple-say/releases/download/v#{version}/Apple-Say.dmg"
   name "Apple Say"
