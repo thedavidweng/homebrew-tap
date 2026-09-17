@@ -1,7 +1,6 @@
 cask "tg-drive-cli" do
   version "0.2.0"
-  # TODO: replace with the real v0.2.0 checksums.txt value before merging.
-  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+  sha256 "f7f04af4a1414f406499a7a2dfb1c3a21a2d956e32fd6307f77f6e9b41b148eb"
 
   url "https://github.com/thedavidweng/tg-drive-cli/releases/download/v#{version}/td_darwin_universal.tar.gz"
   name "tg-drive-cli"
