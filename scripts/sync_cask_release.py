@@ -53,6 +53,11 @@ APPS = {
         "cask_path": ROOT / "Casks" / "apple-say.rb",
         "asset_name": "Apple-Say.dmg",
     },
+    "tg-drive-cli": {
+        "repo_slug": "thedavidweng/tg-drive-cli",
+        "cask_path": ROOT / "Casks" / "tg-drive-cli.rb",
+        "asset_name": "td_darwin_universal.tar.gz",
+    },
 }
 
 

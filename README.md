@@ -31,6 +31,7 @@ brew install --cask thedavidweng/tap/openloop
 | [Monarch Money CLI](https://github.com/thedavidweng/monarchmoney-cli) | CLI for Monarch Money | cask |
 | [Zenodo CLI](https://github.com/thedavidweng/zenodo-cli) | CLI for Zenodo deposit management | cask |
 | [Flickr CLI](https://github.com/thedavidweng/flickr-cli) | CLI for Flickr photo management | cask |
+| [tg-drive-cli](https://github.com/thedavidweng/tg-drive-cli) | Telegram-backed virtual file tree CLI (`td`) | cask |
 
 ```bash
 brew install --cask thedavidweng/tap/money
@@ -38,6 +39,7 @@ brew install --cask thedavidweng/tap/canvas
 brew install --cask thedavidweng/tap/monarchmoney-cli
 brew install --cask thedavidweng/tap/zenodo
 brew install --cask thedavidweng/tap/flickr
+brew install --cask thedavidweng/tap/tg-drive-cli
 ```
 
 ## Third-Party Apps
@@ -77,4 +79,5 @@ brew audit --cask --strict --tap thedavidweng/homebrew-tap <cask>
 - **My apps** (`Apple Say`, `OpenKara`, `OpenLoop`): updated directly in this repo.
 - **GoReleaser-managed** (`Money`, `Canvas CLI`, `Monarch Money CLI`, `Zenodo CLI`, `Flickr CLI`): published from their own repos via GoReleaser; casks are updated by the release workflow in those repos.
 - **Third-party apps** (`Screenize`, `Pixiv-SwiftUI`, `FluidVoice`, `WiiUDownloader`, `NotchPrompt`): synced automatically from their latest GitHub releases via a scheduled workflow in this repo.
+- **tg-drive-cli**: synced automatically from its latest GitHub release via the scheduled sync workflow in this repo (its release pipeline no longer pushes cask updates directly).
 - **i4Tools**: versioned with a livecheck that follows the redirect URL to detect new releases automatically. Updated via `brew bump-cask-pr` when `brew livecheck` reports a new version.

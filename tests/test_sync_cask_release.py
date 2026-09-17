@@ -113,13 +113,25 @@ def sample_apple_say_payload(version="1.0.0"):
     }
 
 
+def sample_tg_drive_cli_payload(version="0.2.0"):
+    return {
+        "tag_name": f"v{version}",
+        "assets": [
+            {
+                "name": "td_darwin_universal.tar.gz",
+                "digest": "sha256:63b33591e7097a8e323a56c6f67fdd03c528bf1b52f34a47ee7c2c93bea2f842",
+            }
+        ],
+    }
+
+
 class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
     def test_app_config_contains_expected_apps(self):
         module = load_module()
 
         self.assertEqual(
             set(module.APPS),
-            {"pixiv-swiftui", "openkara", "screenize", "fluidvoice", "openloop", "apple-say"},
+            {"pixiv-swiftui", "openkara", "screenize", "fluidvoice", "openloop", "apple-say", "tg-drive-cli"},
         )
         self.assertEqual(module.APPS["pixiv-swiftui"]["repo_slug"], "Eslzzyl/Pixiv-SwiftUI")
         self.assertEqual(module.APPS["pixiv-swiftui"]["cask_path"], ROOT / "Casks" / "pixiv-swiftui.rb")
@@ -151,6 +163,9 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
         self.assertEqual(module.APPS["apple-say"]["repo_slug"], "thedavidweng/apple-say")
         self.assertEqual(module.APPS["apple-say"]["cask_path"], ROOT / "Casks" / "apple-say.rb")
         self.assertEqual(module.APPS["apple-say"]["asset_name"], "Apple-Say.dmg")
+        self.assertEqual(module.APPS["tg-drive-cli"]["repo_slug"], "thedavidweng/tg-drive-cli")
+        self.assertEqual(module.APPS["tg-drive-cli"]["cask_path"], ROOT / "Casks" / "tg-drive-cli.rb")
+        self.assertEqual(module.APPS["tg-drive-cli"]["asset_name"], "td_darwin_universal.tar.gz")
 
     def test_fetch_latest_release_includes_authorization_header_when_token_present(self):
         module = load_module()
@@ -702,6 +717,44 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
             )
             self.assertEqual(stderr.getvalue(), "")
 
+    def test_main_supports_tg_drive_cli_app(self):
+        module = load_module()
+        called_apps = []
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_cask = pathlib.Path(tmpdir) / "tg-drive-cli.rb"
+            tmp_cask.write_text(
+                (
+                    'cask "tg-drive-cli" do\n'
+                    '  version "0.1.0"\n'
+                    '  sha256 "old-sha"\n'
+                    "end\n"
+                ),
+                encoding="utf-8",
+            )
+            stdout = io.StringIO()
+            stderr = io.StringIO()
+
+            def fetch_release(app):
+                called_apps.append(app)
+                return sample_tg_drive_cli_payload()
+
+            with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                exit_code = module.main(
+                    ["--app", "tg-drive-cli", "--cask", str(tmp_cask)],
+                    fetch_release=fetch_release,
+                )
+
+            self.assertEqual(exit_code, 0)
+            self.assertEqual(called_apps, [module.APPS["tg-drive-cli"]])
+            self.assertIn("Updated", stdout.getvalue())
+            self.assertIn('version "0.2.0"', tmp_cask.read_text(encoding="utf-8"))
+            self.assertIn(
+                '  sha256 "63b33591e7097a8e323a56c6f67fdd03c528bf1b52f34a47ee7c2c93bea2f842"',
+                tmp_cask.read_text(encoding="utf-8"),
+            )
+            self.assertEqual(stderr.getvalue(), "")
+
     def test_main_supports_repeated_app_flags(self):
         module = load_module()
         called_apps = []
@@ -1000,7 +1053,7 @@ class SyncWorkflowAuditScopeTests(unittest.TestCase):
     """Sync Releases must not audit the entire tap via --tap (Homebrew audits all casks)."""
 
     WORKFLOW_PATH = ROOT / ".github" / "workflows" / "sync.yml"
-    SYNCED_CASKS = ("pixiv-swiftui", "openkara", "screenize", "fluidvoice", "apple-say")
+    SYNCED_CASKS = ("pixiv-swiftui", "openkara", "screenize", "fluidvoice", "apple-say", "tg-drive-cli")
 
     def test_audit_step_targets_only_synced_casks_without_tap_flag(self):
         workflow = self.WORKFLOW_PATH.read_text(encoding="utf-8")
