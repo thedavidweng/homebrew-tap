@@ -131,7 +131,7 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
 
         self.assertEqual(
             set(module.APPS),
-            {"pixiv-swiftui", "openkara", "screenize", "fluidvoice", "openloop", "apple-say", "tg-drive-cli"},
+            {"pixiv-swiftui", "openkara", "screenize", "fluidvoice", "openloop", "apple-say", "sukiru", "tg-drive-cli"},
         )
         self.assertEqual(module.APPS["pixiv-swiftui"]["repo_slug"], "Eslzzyl/Pixiv-SwiftUI")
         self.assertEqual(module.APPS["pixiv-swiftui"]["cask_path"], ROOT / "Casks" / "pixiv-swiftui.rb")

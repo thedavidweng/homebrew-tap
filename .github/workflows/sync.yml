@@ -43,7 +43,7 @@ jobs:
       - name: Sync cask releases
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python scripts/sync_cask_release.py --app pixiv-swiftui --app openkara --app screenize --app fluidvoice --app apple-say --app tg-drive-cli
+        run: python scripts/sync_cask_release.py --app pixiv-swiftui --app openkara --app screenize --app fluidvoice --app apple-say --app sukiru --app tg-drive-cli
 
       - name: Run sync tests
         run: python -m unittest tests.test_sync_cask_release
@@ -51,6 +51,8 @@ jobs:
       # Do not pass --tap here: `brew audit --tap <tap>` audits every cask in the
       # tap, so unrelated cask failures (e.g. sdf-flash-gui) block Sync Releases.
       - name: Audit casks
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           brew audit --cask --strict \
             thedavidweng/tap/pixiv-swiftui \
@@ -59,6 +61,13 @@ jobs:
             thedavidweng/tap/fluidvoice \
             thedavidweng/tap/apple-say \
             thedavidweng/tap/tg-drive-cli
+          # Sukiru's cask ships before its first release is published; audit
+          # it only once a release exists (the sync step skips 404s until then).
+          if gh api repos/thedavidweng/gino/releases/latest --jq .tag_name &>/dev/null; then
+            brew audit --cask --strict thedavidweng/tap/sukiru
+          else
+            echo "sukiru: no published release yet; skipping audit"
+          fi
 
       - name: Commit and push changes
         run: |
@@ -68,6 +77,7 @@ jobs:
             Casks/screenize.rb
             Casks/fluidvoice.rb
             Casks/apple-say.rb
+            Casks/sukiru.rb
             Casks/tg-drive-cli.rb
           )
           changed_casks=()

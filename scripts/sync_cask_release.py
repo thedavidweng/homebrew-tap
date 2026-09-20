@@ -53,6 +53,11 @@ APPS = {
         "cask_path": ROOT / "Casks" / "apple-say.rb",
         "asset_name": "Apple-Say.dmg",
     },
+    "sukiru": {
+        "repo_slug": "thedavidweng/gino",
+        "cask_path": ROOT / "Casks" / "sukiru.rb",
+        "asset_name": "Sukiru.dmg",
+    },
     "tg-drive-cli": {
         "repo_slug": "thedavidweng/tg-drive-cli",
         "cask_path": ROOT / "Casks" / "tg-drive-cli.rb",
@@ -256,7 +261,7 @@ def sync_app(app_name, cask_override=None, fetch_release=fetch_latest_release, d
         release = extract_release_info(payload, app)
     except urllib.error.HTTPError as exc:
         exc.close()
-        if exc.code == 404 and app_name in ("openkara", "apple-say"):
+        if exc.code == 404 and app_name in ("openkara", "apple-say", "sukiru"):
             print(f"Skipping {app_name}: no published release found")
             return 0
         print(f"Error: {exc}", file=sys.stderr)
