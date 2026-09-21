@@ -3,16 +3,16 @@ cask "qualtrics" do
   version "0.1.0"
 
   on_macos do
-    sha256 "6316f02e0e48b6a01eb7d03f354dfa8d2822f6433f109240dd61ba37cd2644ad"
+    sha256 "803b6a1376a942e1464b22613d289f4584c280ef461d27838ffc6cfc1a34b510"
     url "https://github.com/thedavidweng/qualtrics-cli/releases/download/v#{version}/qualtrics_darwin_universal.tar.gz"
   end
   on_linux do
     on_arm do
-      sha256 "1142b94669af4b73f2fc55840022ac570ff55ed2ab339a7d7af075a9149bd140"
+      sha256 "3cf7ad82aa00faf5d98e94298ecda5aafb072c578cd43ac47864c19a2faa041f"
       url "https://github.com/thedavidweng/qualtrics-cli/releases/download/v#{version}/qualtrics_linux_arm64.tar.gz"
     end
     on_intel do
-      sha256 "e8d027ba5ff9dc23c1e2f3bb0a932294ea19f8bfa55714aa4474d4ee11ac2b73"
+      sha256 "cfe1e19a7d9fa2d9ae01b0a626ff7957fe3b0372d89c322fd4ed5bf63283f85e"
       url "https://github.com/thedavidweng/qualtrics-cli/releases/download/v#{version}/qualtrics_linux_x86_64.tar.gz"
     end
   end
