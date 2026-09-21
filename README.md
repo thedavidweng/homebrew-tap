@@ -15,7 +15,7 @@ brew tap thedavidweng/homebrew-tap
 | [Apple Say](https://github.com/thedavidweng/apple-say) | Native macOS text-to-speech editor and audio exporter | cask |
 | [OpenKara](https://github.com/thedavidweng/OpenKara) | Open source karaoke player for macOS | cask |
 | [OpenLoop](https://github.com/thedavidweng/OpenLoop) | AI music generation desktop application | cask |
-| [Sukiru](https://github.com/thedavidweng/gino) | Native macOS skill-library health checker and repairer | cask |
+| [Sukiru](https://github.com/thedavidweng/sukiru) | Native macOS skill-library health checker and repairer | cask |
 
 ```bash
 brew install --cask thedavidweng/tap/apple-say

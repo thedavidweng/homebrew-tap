@@ -4,10 +4,10 @@ cask "sukiru" do
   version "1.0.0"
   sha256 :no_check
 
-  url "https://github.com/thedavidweng/gino/releases/download/v#{version}/Sukiru.dmg"
+  url "https://github.com/thedavidweng/sukiru/releases/download/v#{version}/Sukiru.dmg"
   name "Sukiru"
   desc "Native macOS skill-library health checker and repairer"
-  homepage "https://github.com/thedavidweng/gino"
+  homepage "https://github.com/thedavidweng/sukiru"
 
   livecheck do
     url :url

@@ -54,7 +54,7 @@ APPS = {
         "asset_name": "Apple-Say.dmg",
     },
     "sukiru": {
-        "repo_slug": "thedavidweng/gino",
+        "repo_slug": "thedavidweng/sukiru",
         "cask_path": ROOT / "Casks" / "sukiru.rb",
         "asset_name": "Sukiru.dmg",
     },
