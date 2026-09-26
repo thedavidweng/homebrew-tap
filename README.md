@@ -30,6 +30,7 @@ brew install --cask thedavidweng/tap/sukiru
 |------|-------------|------|
 | [Money](https://github.com/thedavidweng/money) | Local-first personal finance backend | cask |
 | [Canvas CLI](https://github.com/thedavidweng/canvas-cli) | Agent-friendly CLI for Canvas LMS | cask |
+| [Jobs CLI](https://github.com/thedavidweng/jobs-cli) | Agent-friendly CLI for job discovery and applications | formula (HEAD) |
 | [Monarch Money CLI](https://github.com/thedavidweng/monarchmoney-cli) | CLI for Monarch Money | cask |
 | [Zenodo CLI](https://github.com/thedavidweng/zenodo-cli) | CLI for Zenodo deposit management | cask |
 | [Flickr CLI](https://github.com/thedavidweng/flickr-cli) | CLI for Flickr photo management | cask |
@@ -38,6 +39,7 @@ brew install --cask thedavidweng/tap/sukiru
 ```bash
 brew install --cask thedavidweng/tap/money
 brew install --cask thedavidweng/tap/canvas
+brew install --HEAD thedavidweng/tap/jobs-cli
 brew install --cask thedavidweng/tap/monarchmoney-cli
 brew install --cask thedavidweng/tap/zenodo
 brew install --cask thedavidweng/tap/flickr
@@ -80,6 +82,8 @@ brew audit --cask --strict --tap thedavidweng/homebrew-tap <cask>
 
 - **My apps** (`Apple Say`, `OpenKara`, `OpenLoop`): updated directly in this repo.
 - **GoReleaser-managed** (`Money`, `Canvas CLI`, `Monarch Money CLI`, `Zenodo CLI`, `Flickr CLI`): published from their own repos via GoReleaser; casks are updated by the release workflow in those repos.
+- **Jobs CLI**: available as a source-built `--HEAD` formula before its first
+  tagged release; future tagged releases will add a GoReleaser-managed cask.
 - **Third-party apps** (`Screenize`, `Pixiv-SwiftUI`, `FluidVoice`, `WiiUDownloader`, `NotchPrompt`): synced automatically from their latest GitHub releases via a scheduled workflow in this repo.
 - **tg-drive-cli**: synced automatically from its latest GitHub release via the scheduled sync workflow in this repo (its release pipeline no longer pushes cask updates directly).
 - **i4Tools**: versioned with a livecheck that follows the redirect URL to detect new releases automatically. Updated via `brew bump-cask-pr` when `brew livecheck` reports a new version.
