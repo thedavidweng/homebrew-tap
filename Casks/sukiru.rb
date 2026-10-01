@@ -6,8 +6,8 @@ cask "sukiru" do
 
   url "https://github.com/thedavidweng/sukiru/releases/download/v#{version}/Sukiru.dmg"
   name "Sukiru"
-  desc "Skill-library health checker and repairer"
-  homepage "https://github.com/thedavidweng/sukiru"
+  desc "Health checker and repairer for coding agents' skill libraries"
+  homepage "https://thedavidweng.github.io/sukiru/"
 
   livecheck do
     url :url
