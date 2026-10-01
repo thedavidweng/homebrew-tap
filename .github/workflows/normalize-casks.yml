@@ -43,17 +43,28 @@ jobs:
           PYTHONDONTWRITEBYTECODE: "1"
         run: python -m unittest tests.test_normalize_cask_style
 
+      - name: Autocorrect cask style
+        # `Cask/StanzaOrder` is excluded on purpose: `qualtrics` must run its
+        # quarantine removal *before* `generate_completions_from_executable`,
+        # which executes the not-yet-notarized binary. Homebrew's canonical
+        # order is the reverse, and letting the cop autocorrect it would break
+        # the install. The normaliser below puts the stanza back where it
+        # belongs. See scripts/normalize_cask_style.py.
+        run: |
+          brew style --fix --except-cops Cask/StanzaOrder \
+            thedavidweng/tap/jobs-cli \
+            thedavidweng/tap/monarchmoney-cli \
+            thedavidweng/tap/money \
+            thedavidweng/tap/qualtrics
+
       - name: Normalise GoReleaser-generated casks
         env:
           PYTHONDONTWRITEBYTECODE: "1"
         run: python scripts/normalize_cask_style.py
 
       - name: Check style
-        # `Cask/StanzaOrder` is excluded on purpose: `qualtrics` must run its
-        # quarantine removal *before* `generate_completions_from_executable`,
-        # which executes the not-yet-notarized binary. Homebrew's canonical
-        # order is the reverse, and letting the cop autocorrect it would break
-        # the install. See scripts/normalize_cask_style.py.
+        # Only `qualtrics` is expected to report a StanzaOrder offense; it is
+        # the deliberate exception described above.
         run: |
           brew style --except-cops Cask/StanzaOrder \
             thedavidweng/tap/jobs-cli \
