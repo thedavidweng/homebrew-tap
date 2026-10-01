@@ -4,6 +4,7 @@ cask "jobs-cli" do
 
   on_macos do
     sha256 "232b5a04afaf6a9d754cad69e2cde27bf8e58ef57786332f3b95a436727322d0"
+
     url "https://github.com/thedavidweng/jobs-cli/releases/download/v#{version}/jobs-cli_darwin_universal.tar.gz"
   end
   on_linux do
@@ -27,9 +28,9 @@ cask "jobs-cli" do
 
   binary "jobs-cli"
 
-  preflight do
-    if OS.mac?
-      system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/jobs-cli"]
+  postflight_steps do
+    on_macos do
+      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}/jobs-cli"]
     end
   end
 

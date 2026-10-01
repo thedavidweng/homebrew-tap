@@ -6,7 +6,7 @@ cask "sukiru" do
 
   url "https://github.com/thedavidweng/sukiru/releases/download/v#{version}/Sukiru.dmg"
   name "Sukiru"
-  desc "Native macOS skill-library health checker and repairer"
+  desc "Skill-library health checker and repairer"
   homepage "https://github.com/thedavidweng/sukiru"
 
   livecheck do

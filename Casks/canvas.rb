@@ -24,7 +24,7 @@ cask "canvas" do
   end
 
   name "canvas"
-  desc "Agent-friendly CLI for Canvas LMS course management, assignments, submissions, and more"
+  desc "Agent-friendly CLI for Canvas LMS courses, assignments, and submissions"
   homepage "https://github.com/thedavidweng/canvas-cli"
 
   livecheck do
@@ -32,10 +32,9 @@ cask "canvas" do
   end
 
   binary "canvas"
-
   generate_completions_from_executable "canvas", "completion",
-    shell_parameter_format: :cobra,
-    shells: [:bash, :zsh, :fish]
+                                       shell_parameter_format: :cobra,
+                                       shells:                 [:bash, :zsh, :fish]
 
   # No zap stanza required
 end

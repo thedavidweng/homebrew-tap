@@ -4,6 +4,7 @@ cask "qualtrics" do
 
   on_macos do
     sha256 "389663a2263f7ffda81d7e7f60628ea4cfb8d70f1091995926cf5f146827f91a"
+
     url "https://github.com/thedavidweng/qualtrics-cli/releases/download/v#{version}/qualtrics_darwin_universal.tar.gz"
   end
   on_linux do
@@ -18,7 +19,7 @@ cask "qualtrics" do
   end
 
   name "qualtrics"
-  desc "Agent-friendly CLI for the Qualtrics Experience Management Platform & offline survey compiler"
+  desc "Agent-friendly CLI for the Qualtrics survey platform"
   homepage "https://github.com/thedavidweng/qualtrics-cli"
 
   livecheck do
@@ -27,14 +28,21 @@ cask "qualtrics" do
 
   binary "qualtrics"
 
-  postflight do
-    if OS.mac?
-      system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/qualtrics"]
+  # Quarantine removal must run before `generate_completions_from_executable`,
+  # which executes the staged binary: the release is not notarized, so running
+  # it while still quarantined gets it SIGKILLed by Gatekeeper (exit 137).
+  # Homebrew's canonical stanza order lists the completion stanza earlier; that
+  # order is deliberately not followed here.
+  # See https://github.com/goreleaser/goreleaser/issues/5958
+  postflight_steps do
+    on_macos do
+      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}/qualtrics"]
     end
   end
+
   generate_completions_from_executable "qualtrics", "completion",
-    shell_parameter_format: :cobra,
-    shells: [:bash, :zsh, :fish]
+                                       shell_parameter_format: :cobra,
+                                       shells:                 [:bash, :zsh, :fish]
 
   # No zap stanza required
 end

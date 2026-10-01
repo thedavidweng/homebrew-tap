@@ -1,0 +1,73 @@
+name: Normalize Generated Casks
+
+# GoReleaser pushes the casks it generates straight into this tap (see the
+# `homebrew_casks` block in each CLI repo's .goreleaser.yaml), bypassing the
+# workflows above. Its cask template still emits Homebrew's deprecated
+# `preflight`/`postflight` stanzas (goreleaser/goreleaser#6873), so the source
+# repos emit a `postflight_steps` block via `custom_block` instead — which
+# GoReleaser renders at the top of the cask, out of stanza order.
+#
+# This workflow moves that block into place after each such push.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Casks/*.rb"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: normalize-generated-casks
+  cancel-in-progress: false
+
+jobs:
+  normalize:
+    runs-on: macos-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Run normaliser tests
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python -m unittest tests.test_normalize_cask_style
+
+      - name: Normalise GoReleaser-generated casks
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python scripts/normalize_cask_style.py
+
+      - name: Check style
+        # `Cask/StanzaOrder` is excluded on purpose: `qualtrics` must run its
+        # quarantine removal *before* `generate_completions_from_executable`,
+        # which executes the not-yet-notarized binary. Homebrew's canonical
+        # order is the reverse, and letting the cop autocorrect it would break
+        # the install. See scripts/normalize_cask_style.py.
+        run: |
+          brew style --except-cops Cask/StanzaOrder \
+            thedavidweng/tap/jobs-cli \
+            thedavidweng/tap/monarchmoney-cli \
+            thedavidweng/tap/money \
+            thedavidweng/tap/qualtrics
+
+      - name: Commit and push changes
+        run: |
+          if [ -z "$(git status --porcelain -- Casks)" ]; then
+            echo "No cask changes to commit"
+            exit 0
+          fi
+
+          git add Casks
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Normalize GoReleaser casks to current Homebrew stanza style'
+          git push origin HEAD:main

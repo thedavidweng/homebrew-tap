@@ -4,6 +4,7 @@ cask "monarchmoney-cli" do
 
   on_macos do
     sha256 "e53afa5376606166e59c44831ddf546d784d34ca97e6043f783ee564e83aa182"
+
     url "https://github.com/thedavidweng/monarchmoney-cli/releases/download/v#{version}/monarch_darwin_universal.tar.gz"
   end
   on_linux do
@@ -27,9 +28,9 @@ cask "monarchmoney-cli" do
 
   binary "monarch"
 
-  postflight do
-    if OS.mac?
-      system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/monarch"]
+  postflight_steps do
+    on_macos do
+      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}/monarch"]
     end
   end
 
