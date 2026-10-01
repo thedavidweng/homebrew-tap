@@ -1,12 +1,10 @@
 cask "sukiru" do
-  # The first release is not published yet; scripts/sync_cask_release.py
-  # fills version and sha256 from the latest GitHub release once it exists.
   version "1.0.0"
-  sha256 :no_check
+  sha256 "39503244f07556a6f47d3b40792cf3a28d91a5433e7b69af78c1001794f5b8fb"
 
   url "https://github.com/thedavidweng/sukiru/releases/download/v#{version}/Sukiru.dmg"
   name "Sukiru"
-  desc "Health checker and repairer for coding agents' skill libraries"
+  desc "Checks, repairs, and installs skills for coding agents"
   homepage "https://thedavidweng.github.io/sukiru/"
 
   livecheck do
