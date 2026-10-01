@@ -7,7 +7,7 @@ cask "wiiu-downloader" do
   desc "Download Wii U games, updates, DLC and demos from Nintendo's servers"
   homepage "https://github.com/Xpl0itU/WiiUDownloader"
 
-  depends_on macos: :big_sur
+  depends_on :macos
 
   app "WiiUDownloader.app"
 

@@ -18,8 +18,10 @@ cask "telegram-drive" do
   end
 
   auto_updates true
-  # Tauri 2.11/objc2 uses WebKit APIs unavailable on Catalina and panics at launch.
-  depends_on macos: :big_sur
+  # Tauri 2.11/objc2 uses WebKit APIs that predate Big Sur and panic at launch
+  # on older systems. `depends_on :macos` is the current Homebrew runtime
+  # floor, so no extra minimum is declared.
+  depends_on :macos
 
   app "Telegram Drive.app"
 

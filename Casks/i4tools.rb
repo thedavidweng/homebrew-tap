@@ -18,7 +18,7 @@ cask "i4tools" do
     end
   end
 
-  depends_on macos: :big_sur
+  depends_on :macos
 
   pkg "i4tools_#{arch}.pkg"
 
