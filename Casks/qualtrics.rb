@@ -27,22 +27,18 @@ cask "qualtrics" do
   end
 
   binary "qualtrics"
+  generate_completions_from_executable "qualtrics", "completion",
+                                       shell_parameter_format: :cobra,
+                                       shells:                 [:bash, :zsh, :fish]
 
-  # Quarantine removal must run before `generate_completions_from_executable`,
-  # which executes the staged binary: the release is not notarized, so running
-  # it while still quarantined gets it SIGKILLed by Gatekeeper (exit 137).
-  # Homebrew's canonical stanza order lists the completion stanza earlier; that
-  # order is deliberately not followed here.
-  # See https://github.com/goreleaser/goreleaser/issues/5958
+  # Removes the quarantine attribute Gatekeeper would otherwise apply to the
+  # download: this release is not notarized, so leaving it set makes the
+  # binary hang when run.
   postflight_steps do
     on_macos do
       run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}/qualtrics"]
     end
   end
-
-  generate_completions_from_executable "qualtrics", "completion",
-                                       shell_parameter_format: :cobra,
-                                       shells:                 [:bash, :zsh, :fish]
 
   # No zap stanza required
 end

@@ -44,14 +44,8 @@ jobs:
         run: python -m unittest tests.test_normalize_cask_style
 
       - name: Autocorrect cask style
-        # `Cask/StanzaOrder` is excluded on purpose: `qualtrics` must run its
-        # quarantine removal *before* `generate_completions_from_executable`,
-        # which executes the not-yet-notarized binary. Homebrew's canonical
-        # order is the reverse, and letting the cop autocorrect it would break
-        # the install. The normaliser below puts the stanza back where it
-        # belongs. See scripts/normalize_cask_style.py.
         run: |
-          brew style --fix --except-cops Cask/StanzaOrder \
+          brew style --fix \
             thedavidweng/tap/jobs-cli \
             thedavidweng/tap/monarchmoney-cli \
             thedavidweng/tap/money \
@@ -63,10 +57,8 @@ jobs:
         run: python scripts/normalize_cask_style.py
 
       - name: Check style
-        # Only `qualtrics` is expected to report a StanzaOrder offense; it is
-        # the deliberate exception described above.
         run: |
-          brew style --except-cops Cask/StanzaOrder \
+          brew style \
             thedavidweng/tap/jobs-cli \
             thedavidweng/tap/monarchmoney-cli \
             thedavidweng/tap/money \

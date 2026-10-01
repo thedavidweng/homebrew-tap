@@ -47,8 +47,9 @@ STYLE_FIXED = HEADER + """cask "ztest" do
 end
 """
 
-# The quarantine removal must land *before* `generate_completions_from_executable`,
-# because that stanza executes the not-yet-notarized binary.
+# `generate_completions_from_executable` belongs *before* `postflight_steps` in
+# canonical stanza order. Execution order is decided by artifact class sorting,
+# not file order, so this is purely cosmetic conformance.
 WITH_COMPLETIONS = HEADER + """cask "ztest" do
   postflight_steps do
     on_macos do
@@ -145,12 +146,14 @@ class NormalizeCaskStyleTest(unittest.TestCase):
         self.assertLess(out.index("    on_arm do"), out.index("    on_intel do"))
         self.assertLess(out.rindex("    on_arm do"), out.rindex("    on_intel do"))
 
-    def test_block_precedes_completion_generation(self):
+    def test_block_follows_completion_generation(self):
+        # Canonical order puts the completion stanza first. Execution order is
+        # unaffected either way: ArtifactSet sorts artifacts by class.
         out, changed = self.mod.normalise(WITH_COMPLETIONS)
         self.assertTrue(changed)
         self.assertLess(
-            out.index("  postflight_steps do"),
             out.index("  generate_completions_from_executable"),
+            out.index("  postflight_steps do"),
         )
 
     def test_is_idempotent(self):
@@ -169,7 +172,7 @@ class NormalizeCaskStyleTest(unittest.TestCase):
         good = HEADER + (
             'cask "ztest" do\n  version "1.0.0"\n\n'
             '  name "ztest"\n  desc "Test cask"\n  homepage "https://example.com"\n\n'
-            '  binary "ztest"\n\n'
+            '  binary "ztest"\n  generate_completions_from_executable "ztest"\n\n'
             "  postflight_steps do\n    on_macos do\n"
             '      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}/ztest"]\n'
             "    end\n  end\n\n"
