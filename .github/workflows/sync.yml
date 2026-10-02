@@ -63,7 +63,7 @@ jobs:
             thedavidweng/tap/tg-drive-cli
           # Sukiru's cask ships before its first release is published; audit
           # it only once a release exists (the sync step skips 404s until then).
-          if gh api repos/thedavidweng/gino/releases/latest --jq .tag_name &>/dev/null; then
+          if gh api repos/thedavidweng/sukiru/releases/latest --jq .tag_name &>/dev/null; then
             brew audit --cask --strict thedavidweng/tap/sukiru
           else
             echo "sukiru: no published release yet; skipping audit"
