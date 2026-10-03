@@ -58,9 +58,9 @@ APPS = {
         "cask_path": ROOT / "Casks" / "sukiru.rb",
         "asset_name": "Sukiru.dmg",
     },
-    "tg-drive-cli": {
-        "repo_slug": "thedavidweng/tg-drive-cli",
-        "cask_path": ROOT / "Casks" / "tg-drive-cli.rb",
+    "tg-drive": {
+        "repo_slug": "thedavidweng/tg-drive",
+        "cask_path": ROOT / "Casks" / "tg-drive.rb",
         "asset_name": "td_darwin_universal.tar.gz",
     },
 }

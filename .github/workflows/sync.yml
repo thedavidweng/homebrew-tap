@@ -43,7 +43,7 @@ jobs:
       - name: Sync cask releases
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python scripts/sync_cask_release.py --app pixiv-swiftui --app openkara --app screenize --app fluidvoice --app apple-say --app sukiru --app tg-drive-cli
+        run: python scripts/sync_cask_release.py --app pixiv-swiftui --app openkara --app screenize --app fluidvoice --app apple-say --app sukiru --app tg-drive
 
       - name: Run sync tests
         run: python -m unittest tests.test_sync_cask_release
@@ -60,7 +60,7 @@ jobs:
             thedavidweng/tap/screenize \
             thedavidweng/tap/fluidvoice \
             thedavidweng/tap/apple-say \
-            thedavidweng/tap/tg-drive-cli
+            thedavidweng/tap/tg-drive
           # Sukiru's cask ships before its first release is published; audit
           # it only once a release exists (the sync step skips 404s until then).
           if gh api repos/thedavidweng/sukiru/releases/latest --jq .tag_name &>/dev/null; then
@@ -78,7 +78,7 @@ jobs:
             Casks/fluidvoice.rb
             Casks/apple-say.rb
             Casks/sukiru.rb
-            Casks/tg-drive-cli.rb
+            Casks/tg-drive.rb
           )
           changed_casks=()
           while IFS= read -r line; do

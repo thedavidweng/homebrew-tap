@@ -131,7 +131,7 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
 
         self.assertEqual(
             set(module.APPS),
-            {"pixiv-swiftui", "openkara", "screenize", "fluidvoice", "openloop", "apple-say", "sukiru", "tg-drive-cli"},
+            {"pixiv-swiftui", "openkara", "screenize", "fluidvoice", "openloop", "apple-say", "sukiru", "tg-drive"},
         )
         self.assertEqual(module.APPS["pixiv-swiftui"]["repo_slug"], "Eslzzyl/Pixiv-SwiftUI")
         self.assertEqual(module.APPS["pixiv-swiftui"]["cask_path"], ROOT / "Casks" / "pixiv-swiftui.rb")
@@ -163,9 +163,9 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
         self.assertEqual(module.APPS["apple-say"]["repo_slug"], "thedavidweng/apple-say")
         self.assertEqual(module.APPS["apple-say"]["cask_path"], ROOT / "Casks" / "apple-say.rb")
         self.assertEqual(module.APPS["apple-say"]["asset_name"], "Apple-Say.dmg")
-        self.assertEqual(module.APPS["tg-drive-cli"]["repo_slug"], "thedavidweng/tg-drive-cli")
-        self.assertEqual(module.APPS["tg-drive-cli"]["cask_path"], ROOT / "Casks" / "tg-drive-cli.rb")
-        self.assertEqual(module.APPS["tg-drive-cli"]["asset_name"], "td_darwin_universal.tar.gz")
+        self.assertEqual(module.APPS["tg-drive"]["repo_slug"], "thedavidweng/tg-drive")
+        self.assertEqual(module.APPS["tg-drive"]["cask_path"], ROOT / "Casks" / "tg-drive.rb")
+        self.assertEqual(module.APPS["tg-drive"]["asset_name"], "td_darwin_universal.tar.gz")
 
     def test_fetch_latest_release_includes_authorization_header_when_token_present(self):
         module = load_module()
@@ -722,10 +722,10 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
         called_apps = []
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            tmp_cask = pathlib.Path(tmpdir) / "tg-drive-cli.rb"
+            tmp_cask = pathlib.Path(tmpdir) / "tg-drive.rb"
             tmp_cask.write_text(
                 (
-                    'cask "tg-drive-cli" do\n'
+                    'cask "tg-drive" do\n'
                     '  version "0.1.0"\n'
                     '  sha256 "old-sha"\n'
                     "end\n"
@@ -741,12 +741,12 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
 
             with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
                 exit_code = module.main(
-                    ["--app", "tg-drive-cli", "--cask", str(tmp_cask)],
+                    ["--app", "tg-drive", "--cask", str(tmp_cask)],
                     fetch_release=fetch_release,
                 )
 
             self.assertEqual(exit_code, 0)
-            self.assertEqual(called_apps, [module.APPS["tg-drive-cli"]])
+            self.assertEqual(called_apps, [module.APPS["tg-drive"]])
             self.assertIn("Updated", stdout.getvalue())
             self.assertIn('version "0.2.0"', tmp_cask.read_text(encoding="utf-8"))
             self.assertIn(
@@ -1053,7 +1053,7 @@ class SyncWorkflowAuditScopeTests(unittest.TestCase):
     """Sync Releases must not audit the entire tap via --tap (Homebrew audits all casks)."""
 
     WORKFLOW_PATH = ROOT / ".github" / "workflows" / "sync.yml"
-    SYNCED_CASKS = ("pixiv-swiftui", "openkara", "screenize", "fluidvoice", "apple-say", "tg-drive-cli")
+    SYNCED_CASKS = ("pixiv-swiftui", "openkara", "screenize", "fluidvoice", "apple-say", "tg-drive")
 
     def test_audit_step_targets_only_synced_casks_without_tap_flag(self):
         workflow = self.WORKFLOW_PATH.read_text(encoding="utf-8")

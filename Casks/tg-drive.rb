@@ -1,11 +1,11 @@
-cask "tg-drive-cli" do
+cask "tg-drive" do
   version "0.2.1"
   sha256 "a4d5fee1d7d1c66499777d34b689d0c83532690dc65abede8cf7136d7d36e8fd"
 
-  url "https://github.com/thedavidweng/tg-drive-cli/releases/download/v#{version}/td_darwin_universal.tar.gz"
-  name "tg-drive-cli"
+  url "https://github.com/thedavidweng/tg-drive/releases/download/v#{version}/td_darwin_universal.tar.gz"
+  name "tg-drive"
   desc "Telegram-backed virtual file tree CLI"
-  homepage "https://github.com/thedavidweng/tg-drive-cli"
+  homepage "https://github.com/thedavidweng/tg-drive"
 
   livecheck do
     url :url

@@ -34,7 +34,7 @@ brew install --cask thedavidweng/tap/sukiru
 | [Monarch Money CLI](https://github.com/thedavidweng/monarchmoney-cli) | CLI for Monarch Money | cask |
 | [Zenodo CLI](https://github.com/thedavidweng/zenodo-cli) | CLI for Zenodo deposit management | cask |
 | [Flickr CLI](https://github.com/thedavidweng/flickr-cli) | CLI for Flickr photo management | cask |
-| [tg-drive-cli](https://github.com/thedavidweng/tg-drive-cli) | Telegram-backed virtual file tree CLI (`td`) | cask |
+| [tg-drive](https://github.com/thedavidweng/tg-drive) | Telegram-backed virtual file tree CLI (`td`) | cask |
 
 ```bash
 brew install --cask thedavidweng/tap/money
@@ -43,7 +43,7 @@ brew install --HEAD thedavidweng/tap/jobs-cli
 brew install --cask thedavidweng/tap/monarchmoney-cli
 brew install --cask thedavidweng/tap/zenodo
 brew install --cask thedavidweng/tap/flickr
-brew install --cask thedavidweng/tap/tg-drive-cli
+brew install --cask thedavidweng/tap/tg-drive
 ```
 
 ## Third-Party Apps
@@ -85,5 +85,5 @@ brew audit --cask --strict --tap thedavidweng/homebrew-tap <cask>
 - **Jobs CLI**: available as a source-built `--HEAD` formula before its first
   tagged release; future tagged releases will add a GoReleaser-managed cask.
 - **Third-party apps** (`Screenize`, `Pixiv-SwiftUI`, `FluidVoice`, `WiiUDownloader`, `NotchPrompt`): synced automatically from their latest GitHub releases via a scheduled workflow in this repo.
-- **tg-drive-cli**: synced automatically from its latest GitHub release via the scheduled sync workflow in this repo (its release pipeline no longer pushes cask updates directly).
+- **tg-drive**: synced automatically from its latest GitHub release via the scheduled sync workflow in this repo (its release pipeline no longer pushes cask updates directly).
 - **i4Tools**: versioned with a livecheck that follows the redirect URL to detect new releases automatically. Updated via `brew bump-cask-pr` when `brew livecheck` reports a new version.
