@@ -15,6 +15,7 @@ cask "sukiru" do
   depends_on macos: :sonoma
 
   app "Sukiru.app"
+  binary "#{appdir}/Sukiru.app/Contents/MacOS/sukiru", target: "sukiru"
 
   postflight_steps do
     run "/usr/bin/xattr",
