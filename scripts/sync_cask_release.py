@@ -63,6 +63,11 @@ APPS = {
         "cask_path": ROOT / "Casks" / "tg-drive.rb",
         "asset_name": "td_darwin_universal.tar.gz",
     },
+    "vapourfly": {
+        "repo_slug": "thedavidweng/vapourfly",
+        "cask_path": ROOT / "Casks" / "vapourfly.rb",
+        "asset_name": "vapourfly-macos-aarch64.tar.gz",
+    },
 }
 
 
@@ -261,7 +266,7 @@ def sync_app(app_name, cask_override=None, fetch_release=fetch_latest_release, d
         release = extract_release_info(payload, app)
     except urllib.error.HTTPError as exc:
         exc.close()
-        if exc.code == 404 and app_name in ("openkara", "apple-say", "sukiru"):
+        if exc.code == 404 and app_name in ("openkara", "apple-say", "sukiru", "vapourfly"):
             print(f"Skipping {app_name}: no published release found")
             return 0
         print(f"Error: {exc}", file=sys.stderr)

@@ -16,12 +16,14 @@ brew tap thedavidweng/homebrew-tap
 | [OpenKara](https://github.com/thedavidweng/OpenKara) | Open source karaoke player for macOS | cask |
 | [OpenLoop](https://github.com/thedavidweng/OpenLoop) | AI music generation desktop application | cask |
 | [Sukiru](https://github.com/thedavidweng/sukiru) | Native macOS skill-library health checker and repairer | cask |
+| [Vapourfly](https://github.com/thedavidweng/vapourfly) | Local-first Steam library manager and playlist organizer | cask |
 
 ```bash
 brew install --cask thedavidweng/tap/apple-say
 brew install --cask thedavidweng/tap/openkara
 brew install --cask thedavidweng/tap/openloop
 brew install --cask thedavidweng/tap/sukiru
+brew install --cask thedavidweng/tap/vapourfly
 ```
 
 ## My CLI Tools
@@ -85,5 +87,5 @@ brew audit --cask --strict --tap thedavidweng/homebrew-tap <cask>
 - **Jobs CLI**: available as a source-built `--HEAD` formula before its first
   tagged release; future tagged releases will add a GoReleaser-managed cask.
 - **Third-party apps** (`Screenize`, `Pixiv-SwiftUI`, `FluidVoice`, `WiiUDownloader`, `NotchPrompt`): synced automatically from their latest GitHub releases via a scheduled workflow in this repo.
-- **tg-drive**: synced automatically from its latest GitHub release via the scheduled sync workflow in this repo (its release pipeline no longer pushes cask updates directly).
+- **tg-drive**, **Sukiru**, and **Vapourfly**: synced automatically from their latest GitHub release via the scheduled sync workflow in this repo (their release pipelines do not push cask updates directly).
 - **i4Tools**: versioned with a livecheck that follows the redirect URL to detect new releases automatically. Updated via `brew bump-cask-pr` when `brew livecheck` reports a new version.

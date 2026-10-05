@@ -131,7 +131,7 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
 
         self.assertEqual(
             set(module.APPS),
-            {"pixiv-swiftui", "openkara", "screenize", "fluidvoice", "openloop", "apple-say", "sukiru", "tg-drive"},
+            {"pixiv-swiftui", "openkara", "screenize", "fluidvoice", "openloop", "apple-say", "sukiru", "tg-drive", "vapourfly"},
         )
         self.assertEqual(module.APPS["pixiv-swiftui"]["repo_slug"], "Eslzzyl/Pixiv-SwiftUI")
         self.assertEqual(module.APPS["pixiv-swiftui"]["cask_path"], ROOT / "Casks" / "pixiv-swiftui.rb")
@@ -166,6 +166,9 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
         self.assertEqual(module.APPS["tg-drive"]["repo_slug"], "thedavidweng/tg-drive")
         self.assertEqual(module.APPS["tg-drive"]["cask_path"], ROOT / "Casks" / "tg-drive.rb")
         self.assertEqual(module.APPS["tg-drive"]["asset_name"], "td_darwin_universal.tar.gz")
+        self.assertEqual(module.APPS["vapourfly"]["repo_slug"], "thedavidweng/vapourfly")
+        self.assertEqual(module.APPS["vapourfly"]["cask_path"], ROOT / "Casks" / "vapourfly.rb")
+        self.assertEqual(module.APPS["vapourfly"]["asset_name"], "vapourfly-macos-aarch64.tar.gz")
 
     def test_fetch_latest_release_includes_authorization_header_when_token_present(self):
         module = load_module()
