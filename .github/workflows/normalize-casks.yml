@@ -16,8 +16,7 @@ on:
       - "Casks/*.rb"
   workflow_dispatch:
 
-permissions:
-  contents: write
+permissions: {}
 
 concurrency:
   group: normalize-generated-casks
@@ -25,6 +24,8 @@ concurrency:
 
 jobs:
   normalize:
+    permissions:
+      contents: write
     runs-on: macos-latest
     timeout-minutes: 10
     steps:
