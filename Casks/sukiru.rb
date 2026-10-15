@@ -1,6 +1,6 @@
 cask "sukiru" do
-  version "1.5.0"
-  sha256 "e67a87574ac95ec16fe5cd477394c37276cd37dbd68a66d355366e2fc07c7025"
+  version "1.5.1"
+  sha256 "9be232fc0159e17bc0389909f68b960ea02c40d46e38692236c5c54d2f085da3"
 
   url "https://github.com/thedavidweng/sukiru/releases/download/v#{version}/Sukiru.dmg"
   name "Sukiru"
