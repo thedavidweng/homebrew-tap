@@ -63,6 +63,14 @@ APPS = {
         "cask_path": ROOT / "Casks" / "tg-drive.rb",
         "asset_name": "td_darwin_universal.tar.gz",
     },
+    "strudel-tui": {
+        "repo_slug": "thedavidweng/strudel-tui",
+        "cask_path": ROOT / "Casks" / "strudel-tui.rb",
+        "asset_names": {
+            "arm": "strudel-tui-darwin-arm64.tar.gz",
+            "intel": "strudel-tui-darwin-amd64.tar.gz",
+        },
+    },
     "vapourfly": {
         "repo_slug": "thedavidweng/vapourfly",
         "cask_path": ROOT / "Casks" / "vapourfly.rb",
