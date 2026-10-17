@@ -1,12 +1,12 @@
 cask "sdf-flash-gui" do
-  version "1.1.0"
+  version "1.1.2"
 
   on_arm do
-    sha256 "dfb461cc10db1f38df241b866f47e75f6de2a1e449bd57d5c7f3995e2abd8345"
+    sha256 "bd2b5ba4d886ecb6264ae24cf2fe0a96c6a02cc102a08660b1ee5e6ff70b83ae"
     url "https://github.com/thedavidweng/sdf-flash-gui/releases/download/v#{version}/SDF.Flash.GUI_#{version}_aarch64.dmg"
   end
   on_intel do
-    sha256 "728319512ed0b2429da2872a63bcd31822eb9b97423c74eced4032b13f66cfb6"
+    sha256 "a9d13d5df1c5b5c9d1843fdd642e46a4279d561631a2e95cd29df2fa9bd2c5dd"
     url "https://github.com/thedavidweng/sdf-flash-gui/releases/download/v#{version}/SDF.Flash.GUI_#{version}_x64.dmg"
   end
 
@@ -20,9 +20,4 @@ cask "sdf-flash-gui" do
   end
 
   app "SDF Flash GUI.app"
-
-  postflight_steps do
-    run "/usr/bin/xattr",
-        args: ["-rd", "com.apple.quarantine", "{{appdir}}/SDF Flash GUI.app"]
-  end
 end
