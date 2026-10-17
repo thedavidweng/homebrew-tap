@@ -1,6 +1,6 @@
 cask "sukiru" do
-  version "1.5.1"
-  sha256 "9be232fc0159e17bc0389909f68b960ea02c40d46e38692236c5c54d2f085da3"
+  version "1.5.2"
+  sha256 "a58b6fef85d91c1e75c44ddff8ee0f12bfe547fe684c503155622e3c2311c6e3"
 
   url "https://github.com/thedavidweng/sukiru/releases/download/v#{version}/Sukiru.dmg"
   name "Sukiru"
@@ -12,15 +12,11 @@ cask "sukiru" do
     strategy :github_latest
   end
 
+  depends_on arch: :arm64
   depends_on macos: :sonoma
 
   app "Sukiru.app"
-  binary "#{appdir}/Sukiru.app/Contents/MacOS/sukiru", target: "sukiru"
-
-  postflight_steps do
-    run "/usr/bin/xattr",
-        args: ["-rd", "com.apple.quarantine", "{{appdir}}/Sukiru.app"]
-  end
+  binary "#{appdir}/Sukiru.app/Contents/Helpers/sukiru", target: "sukiru"
 
   zap trash: [
     "~/Library/Application Support/Sukiru",

@@ -1,6 +1,6 @@
 cask "vapourfly" do
-  version "0.3.0"
-  sha256 "8ed2bf86223871c1682ad34d6315d88af649e18cf4e384ac735079be6d2ce829"
+  version "0.3.1"
+  sha256 "1f79b1bfd9a9a94b743e74f2858e8335b8674dda28f304306b31889d0d7dcfd8"
 
   url "https://github.com/thedavidweng/vapourfly/releases/download/v#{version}/vapourfly-macos-aarch64.tar.gz"
   name "Vapourfly"
@@ -13,16 +13,10 @@ cask "vapourfly" do
   end
 
   depends_on arch: :arm64
+  depends_on macos: :monterey
 
   app "vapourfly-macos-aarch64/Vapourfly.app"
   binary "vapourfly-macos-aarch64/vapourfly"
-
-  postflight_steps do
-    on_macos do
-      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{appdir}}/Vapourfly.app"]
-      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}/vapourfly-macos-aarch64/vapourfly"]
-    end
-  end
 
   zap trash: [
     "~/Library/Application Support/vapourfly",
