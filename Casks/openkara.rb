@@ -1,9 +1,9 @@
 cask "openkara" do
   arch arm: "aarch64", intel: "x64"
 
-  version "0.16.0"
-  sha256 arm:   "d5d1256572bd95474e99d74c9b48bb405445f1479dc29e456c03309640f614ed",
-         intel: "59149adc125f506d5f17fca8ced5787b21406dce18f955d4951fd444aa38ca91"
+  version "0.16.2"
+  sha256 arm:   "e07edc01610b4bbfcbc0ee8f33fb7295cbc7ee12bffe62a320f167e38b060b00",
+         intel: "6db1ab5dd8414aaa1a97ad5862fbd8d1a87ac9914fb8e4106aafa7b3015cf75e"
 
   url "https://github.com/thedavidweng/OpenKara/releases/download/v#{version}/OpenKara_#{version}_#{arch}.dmg"
   name "OpenKara"
@@ -19,8 +19,4 @@ cask "openkara" do
 
   app "OpenKara.app"
 
-  postflight_steps do
-    run "/usr/bin/xattr",
-        args: ["-rd", "com.apple.quarantine", "{{appdir}}/OpenKara.app"]
-  end
 end
