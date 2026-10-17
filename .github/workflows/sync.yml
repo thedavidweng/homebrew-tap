@@ -43,7 +43,7 @@ jobs:
       - name: Sync cask releases
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python scripts/sync_cask_release.py --app pixiv-swiftui --app openkara --app screenize --app fluidvoice --app apple-say --app sukiru --app tg-drive --app vapourfly
+        run: python scripts/sync_cask_release.py --app pixiv-swiftui --app openkara --app openloop --app screenize --app fluidvoice --app apple-say --app sukiru --app tg-drive --app vapourfly
 
       - name: Run sync tests
         run: python -m unittest tests.test_sync_cask_release
@@ -57,6 +57,7 @@ jobs:
           brew audit --cask --strict \
             thedavidweng/tap/pixiv-swiftui \
             thedavidweng/tap/openkara \
+            thedavidweng/tap/openloop \
             thedavidweng/tap/screenize \
             thedavidweng/tap/fluidvoice \
             thedavidweng/tap/apple-say \
@@ -75,6 +76,7 @@ jobs:
           owned_casks=(
             Casks/pixiv-swiftui.rb
             Casks/openkara.rb
+            Casks/openloop.rb
             Casks/screenize.rb
             Casks/fluidvoice.rb
             Casks/apple-say.rb

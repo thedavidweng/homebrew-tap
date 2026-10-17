@@ -1,24 +1,22 @@
 cask "openloop" do
-  version "0.1.0"
-  sha256 "c67adec16a2ff384556d95f5c457f740686b11a21ce835d5031d1d5df2442741"
+  version "0.2.2"
+  sha256 "dece62f1352c5ff57eaf769a2a873a76d4ce8fb249dda9138968e8e117677c46"
 
   url "https://github.com/thedavidweng/OpenLoop/releases/download/v#{version}/OpenLoop_#{version}_aarch64.dmg"
   name "OpenLoop"
   desc "AI music generation desktop application"
   homepage "https://github.com/thedavidweng/OpenLoop"
 
+  livecheck do
+    url :url
+    strategy :github_latest
+  end
+
   depends_on arch: :arm64
-  depends_on macos: :sonoma
+  depends_on macos: :sequoia
 
   app "OpenLoop.app"
-
-  postflight_steps do
-    run "/usr/bin/xattr",
-        args: ["-rd", "com.apple.quarantine", "{{appdir}}/OpenLoop.app"]
-    run "/bin/ln",
-        args: ["-sf", "{{appdir}}/OpenLoop.app/Contents/MacOS/openloop", "/usr/local/bin/openloop"],
-        sudo: true
-  end
+  binary "#{appdir}/OpenLoop.app/Contents/MacOS/openloop-cli", target: "openloop"
 
   zap trash: [
     "~/Library/Application Support/openloop",
