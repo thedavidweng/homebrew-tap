@@ -15,7 +15,7 @@ cask "tg-drive" do
   depends_on macos: :monterey
 
   binary "td"
-  generate_completions_from_executable "td", "completion",
+  generate_completions_from_executable "td",
                                        shell_parameter_format: :cobra,
                                        shells:                 [:bash, :zsh, :fish]
 end
