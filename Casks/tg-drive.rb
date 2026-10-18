@@ -12,6 +12,8 @@ cask "tg-drive" do
     strategy :github_latest
   end
 
+  depends_on macos: :monterey
+
   binary "td"
   generate_completions_from_executable "td", "completion",
                                        shell_parameter_format: :cobra,
