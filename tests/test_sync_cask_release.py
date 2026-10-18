@@ -252,12 +252,13 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
             },
         )
 
-    def test_openkara_cask_has_postflight_quarantine_removal(self):
-        cask_text = OPENKARA_CASK_PATH.read_text(encoding="utf-8")
+    def test_notarized_casks_do_not_remove_quarantine(self):
+        for name in ("openkara", "tg-drive", "strudel-tui"):
+            with self.subTest(cask=name):
+                cask_text = (ROOT / "Casks" / f"{name}.rb").read_text(encoding="utf-8")
 
-        self.assertIn("postflight_steps do", cask_text)
-        self.assertIn('run "/usr/bin/xattr"', cask_text)
-        self.assertIn('"{{appdir}}/OpenKara.app"', cask_text)
+                self.assertNotIn("/usr/bin/xattr", cask_text)
+                self.assertNotIn("com.apple.quarantine", cask_text)
 
     def test_extract_release_info_normalizes_tag_and_digests(self):
         module = load_module()
@@ -344,7 +345,7 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
             updated,
         )
 
-    def test_update_cask_contents_preserves_openkara_postflight(self):
+    def test_update_cask_contents_preserves_notarized_openkara_installation(self):
         module = load_module()
 
         updated = module.update_cask_contents(
@@ -359,9 +360,13 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
             },
         )
 
-        self.assertIn("postflight_steps do", updated)
-        self.assertIn('run "/usr/bin/xattr"', updated)
-        self.assertIn('"{{appdir}}/OpenKara.app"', updated)
+        self.assertIn('version "1.2.3"', updated)
+        self.assertIn('sha256 arm:   "' + "c" * 64 + '"', updated)
+        self.assertIn('intel: "' + "d" * 64 + '"', updated)
+        self.assertIn('app "OpenKara.app"', updated)
+        self.assertIn("depends_on :macos", updated)
+        self.assertNotIn("/usr/bin/xattr", updated)
+        self.assertNotIn("com.apple.quarantine", updated)
 
     def test_update_cask_contents_handles_formatting_changes(self):
         module = load_module()
