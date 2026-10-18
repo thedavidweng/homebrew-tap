@@ -18,5 +18,4 @@ cask "openkara" do
   depends_on :macos
 
   app "OpenKara.app"
-
 end
