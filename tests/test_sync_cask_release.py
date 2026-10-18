@@ -188,6 +188,22 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
         with self.assertRaisesRegex(module.ReleaseError, "missing assets for: intel"):
             module.update_cask_contents("", app, incomplete)
 
+    def test_strudel_rewrite_preserves_packaged_binary_and_minimum_macos(self):
+        module = load_module()
+        app = module.APPS["strudel-tui"]
+        original = app["cask_path"].read_text()
+        updated = module.update_cask_contents(
+            original,
+            app,
+            {"version": "0.2.2", "sha256": {"arm": "a" * 64, "intel": "b" * 64}},
+        )
+
+        self.assertIn('version "0.2.2"', updated)
+        self.assertIn('sha256 arm:   "' + "a" * 64 + '"', updated)
+        self.assertIn('intel: "' + "b" * 64 + '"', updated)
+        self.assertIn("depends_on macos: :ventura", updated)
+        self.assertIn('binary "strudel-tui"', updated)
+
     def test_fetch_latest_release_includes_authorization_header_when_token_present(self):
         module = load_module()
 
