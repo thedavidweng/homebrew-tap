@@ -1,9 +1,9 @@
 cask "strudel-tui" do
   arch arm: "arm64", intel: "amd64"
 
-  version "0.2.1"
-  sha256 arm:   "349b21e862b89fbcd6bde5ad83ba4831cb35c86e257782baac14af72f377b52b",
-         intel: "7c97933fd6e0799319ad9497a68b2a41cabc3d67f9fd34aea0ddd27564e4ae3c"
+  version "0.2.2"
+  sha256 arm:   "c0f0c6384da2b5c57902774d1f124c2bcf3447b4d745f005173bf927f193fd68",
+         intel: "615745de272c63aa5db351c07f53b6290e9f839cc6d3924264903e23756b5b2b"
 
   url "https://github.com/thedavidweng/strudel-tui/releases/download/v#{version}/strudel-tui-darwin-#{arch}.tar.gz"
   name "Strudel TUI"

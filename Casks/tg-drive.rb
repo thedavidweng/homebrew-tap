@@ -1,6 +1,6 @@
 cask "tg-drive" do
-  version "1.1.0"
-  sha256 "bfefc49937e42f52b7308c35d36778a2d8505ef5072085900b8739b5c648ee10"
+  version "1.1.1"
+  sha256 "567f4631702a06c6702d0cc92e8c7251f94c478416f5f751cc562eede6985d57"
 
   url "https://github.com/thedavidweng/tg-drive/releases/download/v#{version}/td_darwin_universal.tar.gz"
   name "tg-drive"
