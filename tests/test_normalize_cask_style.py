@@ -202,5 +202,37 @@ class NormalizeCaskStyleTest(unittest.TestCase):
         self.assertFalse(out.endswith("\n\n"))
 
 
+class ZenodoFormulaTests(unittest.TestCase):
+    def setUp(self):
+        spec = importlib.util.spec_from_file_location("normalizer", SCRIPT_PATH)
+        self.mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.mod)
+        self.formula = (ROOT / "Formula" / "zenodo.rb").read_text()
+        import re
+        self.version = re.search(r"/releases/download/v([^/]+)/", self.formula)[1]
+        self.generated = re.sub(r'^  version "[^"]+"\n', "", self.formula, flags=re.M)
+        self.generated = self.generated.replace(
+            "class Zenodo < Formula\n",
+            f'class Zenodo < Formula\n  version "{self.version}"\n',
+        )
+
+    def test_removes_only_redundant_line_and_is_idempotent(self):
+        out, changed = self.mod.normalise_zenodo(self.generated)
+        self.assertTrue(changed)
+        self.assertEqual(out, self.generated.replace(f'  version "{self.version}"\n', "", 1))
+        self.assertEqual((out, False), self.mod.normalise_zenodo(out))
+
+    def test_preserves_mismatched_release_version(self):
+        text = self.generated.replace(f'/download/v{self.version}/', "/download/v999.0.0/", 1)
+        self.assertEqual((text, False), self.mod.normalise_zenodo(text))
+
+    def test_preserves_other_or_handwritten_formula(self):
+        for text in [
+            self.generated.replace("class Zenodo", "class Other"),
+            self.generated.replace(HEADER, ""),
+        ]:
+            self.assertEqual((text, False), self.mod.normalise_zenodo(text))
+
+
 if __name__ == "__main__":
     unittest.main()

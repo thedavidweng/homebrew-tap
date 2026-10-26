@@ -14,6 +14,7 @@ on:
     branches: [main]
     paths:
       - "Casks/*.rb"
+      - "Formula/zenodo.rb"
   workflow_dispatch:
 
 permissions: {}
@@ -67,11 +68,11 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          if [ -z "$(git status --porcelain -- Casks)" ]; then
+          if [ -z "$(git status --porcelain -- Casks Formula/zenodo.rb)" ]; then
             echo "No cask changes to commit"
             exit 0
           fi
 
-          git add Casks
+          git add Casks Formula/zenodo.rb
           git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Normalize GoReleaser casks to current Homebrew stanza style'
           git push origin HEAD:main
