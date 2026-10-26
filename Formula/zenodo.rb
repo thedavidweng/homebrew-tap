@@ -5,13 +5,13 @@
 class Zenodo < Formula
   desc "Agent-friendly CLI for Zenodo deposit management, file upload/download, and InvenioRDM API access"
   homepage "https://github.com/thedavidweng/zenodo-cli"
-  version "0.3.2"
+  version "0.3.3"
   license "Apache-2.0"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/thedavidweng/zenodo-cli/releases/download/v0.3.2/zenodo_0.3.2_darwin_amd64.tar.gz"
-      sha256 "e253d3c49c3ce2fefe12482ba1890f40edc40466e36ab418a28ad87fdef75049"
+      url "https://github.com/thedavidweng/zenodo-cli/releases/download/v0.3.3/zenodo_0.3.3_darwin_amd64.tar.gz"
+      sha256 "0f27006de39d9cc1eb6c066b03bb8e3a9aa81f0de9db459fe5f3cc699b8fe5bd"
 
       define_method(:install) do
         bin.install "zenodo"
@@ -19,8 +19,8 @@ class Zenodo < Formula
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/thedavidweng/zenodo-cli/releases/download/v0.3.2/zenodo_0.3.2_darwin_arm64.tar.gz"
-      sha256 "a976d7449e7519921e609961bc4751db2de68bd7a1b41ae884499ef0b4708467"
+      url "https://github.com/thedavidweng/zenodo-cli/releases/download/v0.3.3/zenodo_0.3.3_darwin_arm64.tar.gz"
+      sha256 "e45548f399a7dbb268ec3044446ef63bc4d1254d5e5f534a60801786a54816fa"
 
       define_method(:install) do
         bin.install "zenodo"
@@ -31,16 +31,16 @@ class Zenodo < Formula
 
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      url "https://github.com/thedavidweng/zenodo-cli/releases/download/v0.3.2/zenodo_0.3.2_linux_amd64.tar.gz"
-      sha256 "c11f88add71d78d7611cd063bb1d9834b10cce920501d0e7a4dd003efd931975"
+      url "https://github.com/thedavidweng/zenodo-cli/releases/download/v0.3.3/zenodo_0.3.3_linux_amd64.tar.gz"
+      sha256 "843d8aa6e9570a1aa4174349cbe78ab0e9c83e808c42778bfceff959db44f464"
       define_method(:install) do
         bin.install "zenodo"
         generate_completions_from_executable(bin/"zenodo", "completion")
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/thedavidweng/zenodo-cli/releases/download/v0.3.2/zenodo_0.3.2_linux_arm64.tar.gz"
-      sha256 "0d8b6437addbd1eef5971d1c0095964c020a84f2f0c8950c00e8548fa43d054a"
+      url "https://github.com/thedavidweng/zenodo-cli/releases/download/v0.3.3/zenodo_0.3.3_linux_arm64.tar.gz"
+      sha256 "9e0e7b3712f68dbba4f5b03fdfa01996ce746aa3aa4f23bb168ca5f04123a43b"
       define_method(:install) do
         bin.install "zenodo"
         generate_completions_from_executable(bin/"zenodo", "completion")
