@@ -45,13 +45,17 @@ jobs:
           PYTHONDONTWRITEBYTECODE: "1"
         run: python -m unittest tests.test_normalize_cask_style
 
+      # Style must run on paths, not on `owner/tap/name`. This job never taps the
+      # repository, and `brew style <owner>/<tap>/<name>` silently reports
+      # "0 files inspected" when the tap is not tapped - a vacuous pass. Paths
+      # make the gate real.
       - name: Autocorrect cask style
         run: |
           brew style --fix \
-            thedavidweng/tap/jobs-cli \
-            thedavidweng/tap/monarchmoney-cli \
-            thedavidweng/tap/money \
-            thedavidweng/tap/qualtrics
+            Casks/jobs-cli.rb \
+            Casks/monarchmoney-cli.rb \
+            Casks/money.rb \
+            Casks/qualtrics.rb
 
       - name: Normalise GoReleaser-generated casks
         env:
@@ -61,10 +65,11 @@ jobs:
       - name: Check style
         run: |
           brew style \
-            thedavidweng/tap/jobs-cli \
-            thedavidweng/tap/monarchmoney-cli \
-            thedavidweng/tap/money \
-            thedavidweng/tap/qualtrics
+            Casks/jobs-cli.rb \
+            Casks/monarchmoney-cli.rb \
+            Casks/money.rb \
+            Casks/qualtrics.rb \
+            Formula/zenodo.rb
 
       - name: Commit and push changes
         run: |
