@@ -49,13 +49,12 @@ jobs:
       # repository, and `brew style <owner>/<tap>/<name>` silently reports
       # "0 files inspected" when the tap is not tapped - a vacuous pass. Paths
       # make the gate real.
+      #
+      # The whole Casks directory is inspected, not a hand-picked list: a list
+      # silently skips any cask added later, which is how canvas and flickr kept
+      # broken completions and a too-long description without any gate noticing.
       - name: Autocorrect cask style
-        run: |
-          brew style --fix \
-            Casks/jobs-cli.rb \
-            Casks/monarchmoney-cli.rb \
-            Casks/money.rb \
-            Casks/qualtrics.rb
+        run: brew style --fix Casks/
 
       - name: Normalise GoReleaser-generated casks
         env:
@@ -63,13 +62,7 @@ jobs:
         run: python scripts/normalize_cask_style.py
 
       - name: Check style
-        run: |
-          brew style \
-            Casks/jobs-cli.rb \
-            Casks/monarchmoney-cli.rb \
-            Casks/money.rb \
-            Casks/qualtrics.rb \
-            Formula/zenodo.rb
+        run: brew style Casks/ Formula/zenodo.rb
 
       - name: Commit and push changes
         run: |
