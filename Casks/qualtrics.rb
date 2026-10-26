@@ -4,6 +4,7 @@ cask "qualtrics" do
 
   on_macos do
     sha256 "f8901a35c4748c76576071d9145509e7b4be22ab8fbb6096eb36c3b13dca01a3"
+
     url "https://github.com/thedavidweng/qualtrics-cli/releases/download/v#{version}/qualtrics_darwin_universal.tar.gz"
   end
   on_linux do
@@ -26,10 +27,9 @@ cask "qualtrics" do
   end
 
   binary "qualtrics"
-
   generate_completions_from_executable "qualtrics", "completion",
-    shell_parameter_format: :cobra,
-    shells: [:bash, :zsh, :fish]
+                                       shell_parameter_format: :cobra,
+                                       shells:                 [:bash, :zsh, :fish]
 
   postflight_steps do
     on_macos do

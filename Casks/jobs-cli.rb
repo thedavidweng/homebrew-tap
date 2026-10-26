@@ -4,6 +4,7 @@ cask "jobs-cli" do
 
   on_macos do
     sha256 "94cecaf172a38cc7a94218b42f1ab9ee454a60a51dca9d4bede6ac61d3b275ec"
+
     url "https://github.com/thedavidweng/jobs-cli/releases/download/v#{version}/jobs-cli_darwin_universal.tar.gz"
   end
   on_linux do
