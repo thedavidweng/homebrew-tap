@@ -5,7 +5,6 @@
 class Zenodo < Formula
   desc "CLI for Zenodo deposits, files, and InvenioRDM API access"
   homepage "https://github.com/thedavidweng/zenodo-cli"
-  version "0.3.4"
   license "Apache-2.0"
 
   on_macos do

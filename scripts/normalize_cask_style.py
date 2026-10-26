@@ -140,14 +140,19 @@ def normalise(text):
 
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
-    paths = [pathlib.Path(p) for p in argv] if argv else sorted(CASK_DIR.glob("*.rb"))
+    paths = [pathlib.Path(p) for p in argv] if argv else [
+        *sorted(CASK_DIR.glob("*.rb")), ROOT / "Formula" / "zenodo.rb"
+    ]
 
     changed = []
     for path in paths:
         text = original = path.read_text(encoding="utf-8")
         if GENERATED_MARKER not in text:
             continue
-        text, did_change = normalise(text)
+        if path.resolve() == (ROOT / "Formula" / "zenodo.rb").resolve():
+            text, did_change = normalise_zenodo(text)
+        else:
+            text, did_change = normalise(text)
         if did_change and text != original:
             path.write_text(text, encoding="utf-8")
             changed.append(path.name)
@@ -157,6 +162,21 @@ def main(argv=None):
     else:
         print("No casks needed normalising.")
     return 0
+
+
+def normalise_zenodo(text):
+    """Remove only a generated version already encoded in every release URL."""
+    if GENERATED_MARKER not in text or "\nclass Zenodo < Formula\n" not in text:
+        return text, False
+    versions = re.findall(r'^  version "([^"]+)"\n', text, re.M)
+    urls = re.findall(r'^\s+url "([^"]+)"$', text, re.M)
+    if len(versions) != 1 or not urls:
+        return text, False
+    version = versions[0]
+    prefix = f"https://github.com/thedavidweng/zenodo-cli/releases/download/v{version}/zenodo_{version}_"
+    if not all(url.startswith(prefix) for url in urls):
+        return text, False
+    return text.replace(f'  version "{version}"\n', "", 1), True
 
 
 if __name__ == "__main__":
