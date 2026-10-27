@@ -1,8 +1,11 @@
 cask "sukiru" do
-  version "1.8.0"
-  sha256 "f08ce402cce8935a1b6c9fd4b5a48b781038774280e10bb5b862cbd6a5818a4d"
+  arch arm: "arm64", intel: "x86_64"
 
-  url "https://github.com/thedavidweng/sukiru/releases/download/v#{version}/Sukiru.dmg"
+  version "1.11.0"
+  sha256 arm:   "daec1df2d5c45de6b8a60b960c1fbe85893e02474727cc958933c7b7293f8572",
+         intel: "1ab065735c2cb519b8994dbcab35d661b91787246fb0e36b4805c52e499a6497"
+
+  url "https://github.com/thedavidweng/sukiru/releases/download/v#{version}/Sukiru-#{arch}.dmg"
   name "Sukiru"
   desc "Checks, repairs, and installs skills for coding agents"
   homepage "https://thedavidweng.github.io/sukiru/"
@@ -12,7 +15,6 @@ cask "sukiru" do
     strategy :github_latest
   end
 
-  depends_on arch: :arm64
   depends_on macos: :sonoma
 
   app "Sukiru.app"
