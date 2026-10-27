@@ -56,7 +56,10 @@ APPS = {
     "sukiru": {
         "repo_slug": "thedavidweng/sukiru",
         "cask_path": ROOT / "Casks" / "sukiru.rb",
-        "asset_name": "Sukiru.dmg",
+        "asset_names": {
+            "arm": "Sukiru-arm64.dmg",
+            "intel": "Sukiru-x86_64.dmg",
+        },
     },
     "tg-drive": {
         "repo_slug": "thedavidweng/tg-drive",
