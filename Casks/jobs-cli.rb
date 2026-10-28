@@ -34,5 +34,5 @@ cask "jobs-cli" do
     end
   end
 
-  # No zap stanza required
+  zap :not_required
 end
