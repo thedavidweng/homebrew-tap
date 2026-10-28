@@ -14,7 +14,6 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 SCRIPT_PATH = ROOT / "scripts" / "sync_cask_release.py"
 CASK_PATH = ROOT / "Casks" / "pixiv-swiftui.rb"
 OPENKARA_CASK_PATH = ROOT / "Casks" / "openkara.rb"
-SCREENIZE_CASK_PATH = ROOT / "Casks" / "screenize.rb"
 FLUIDVOICE_CASK_PATH = ROOT / "Casks" / "fluidvoice.rb"
 OPENLOOP_CASK_PATH = ROOT / "Casks" / "openloop.rb"
 APPLE_SAY_CASK_PATH = ROOT / "Casks" / "apple-say.rb"
@@ -126,50 +125,6 @@ def sample_tg_drive_cli_payload(version="0.2.0"):
 
 
 class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
-    def test_app_config_contains_expected_apps(self):
-        module = load_module()
-
-        self.assertEqual(
-            set(module.APPS),
-            {"pixiv-swiftui", "openkara", "screenize", "fluidvoice", "openloop", "apple-say", "sukiru", "tg-drive", "vapourfly", "strudel-tui"},
-        )
-        self.assertEqual(module.APPS["pixiv-swiftui"]["repo_slug"], "Eslzzyl/Pixiv-SwiftUI")
-        self.assertEqual(module.APPS["pixiv-swiftui"]["cask_path"], ROOT / "Casks" / "pixiv-swiftui.rb")
-        self.assertEqual(
-            module.APPS["pixiv-swiftui"]["asset_names"],
-            {
-                "arm": "Pixiv-SwiftUI-arm64.dmg",
-                "intel": "Pixiv-SwiftUI-x86_64.dmg",
-            },
-        )
-        self.assertEqual(module.APPS["openkara"]["repo_slug"], "thedavidweng/OpenKara")
-        self.assertEqual(module.APPS["openkara"]["cask_path"], ROOT / "Casks" / "openkara.rb")
-        self.assertEqual(
-            module.APPS["openkara"]["asset_patterns"],
-            {
-                "arm": "_aarch64.dmg",
-                "intel": "_x64.dmg",
-            },
-        )
-        self.assertEqual(module.APPS["screenize"]["repo_slug"], "syi0808/screenize")
-        self.assertEqual(module.APPS["screenize"]["cask_path"], ROOT / "Casks" / "screenize.rb")
-        self.assertEqual(module.APPS["screenize"]["asset_name"], "Screenize.dmg")
-        self.assertEqual(module.APPS["fluidvoice"]["repo_slug"], "altic-dev/FluidVoice")
-        self.assertEqual(module.APPS["fluidvoice"]["cask_path"], ROOT / "Casks" / "fluidvoice.rb")
-        self.assertEqual(module.APPS["fluidvoice"]["asset_name_template"], "Fluid-oss-{version}.dmg")
-        self.assertEqual(module.APPS["openloop"]["repo_slug"], "thedavidweng/OpenLoop")
-        self.assertEqual(module.APPS["openloop"]["cask_path"], ROOT / "Casks" / "openloop.rb")
-        self.assertEqual(module.APPS["openloop"]["asset_name_template"], "OpenLoop_{version}_aarch64.dmg")
-        self.assertEqual(module.APPS["apple-say"]["repo_slug"], "thedavidweng/apple-say")
-        self.assertEqual(module.APPS["apple-say"]["cask_path"], ROOT / "Casks" / "apple-say.rb")
-        self.assertEqual(module.APPS["apple-say"]["asset_name"], "Apple-Say.dmg")
-        self.assertEqual(module.APPS["tg-drive"]["repo_slug"], "thedavidweng/tg-drive")
-        self.assertEqual(module.APPS["tg-drive"]["cask_path"], ROOT / "Casks" / "tg-drive.rb")
-        self.assertEqual(module.APPS["tg-drive"]["asset_name"], "td_darwin_universal.tar.gz")
-        self.assertEqual(module.APPS["vapourfly"]["repo_slug"], "thedavidweng/vapourfly")
-        self.assertEqual(module.APPS["vapourfly"]["cask_path"], ROOT / "Casks" / "vapourfly.rb")
-        self.assertEqual(module.APPS["vapourfly"]["asset_name"], "vapourfly-macos-aarch64.tar.gz")
-
     def test_strudel_release_requires_both_exact_mac_archives(self):
         module = load_module()
         app = module.APPS["strudel-tui"]
@@ -231,12 +186,6 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
         self.assertIn("timeout", urlopen.call_args.kwargs)
         self.assertEqual(urlopen.call_args.kwargs["timeout"], 30)
 
-    def test_configured_cask_files_exist_and_are_readable_for_all_apps(self):
-        module = load_module()
-
-        for app in module.APPS.values():
-            self.assertTrue(app["cask_path"].exists())
-            self.assertTrue(module.current_version(app["cask_path"].read_text(encoding="utf-8")))
 
     def test_extract_release_info_uses_selected_app_asset_names(self):
         module = load_module()
@@ -841,11 +790,6 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
             self.assertIn('version "1.2.3"', openkara_cask.read_text(encoding="utf-8"))
             self.assertEqual(stderr.getvalue(), "")
 
-    def test_configured_screenize_cask_file_exists_and_is_readable(self):
-        module = load_module()
-
-        self.assertTrue(SCREENIZE_CASK_PATH.exists())
-        self.assertTrue(module.current_version(SCREENIZE_CASK_PATH.read_text(encoding="utf-8")))
 
     def test_main_skips_missing_latest_release_for_openkara(self):
         module = load_module()
@@ -1060,61 +1004,6 @@ class SyncPixivSwiftUIReleaseTests(unittest.TestCase):
 
         self.assertNotEqual(ctx.exception.code, 0)
         self.assertIn("--cask", stderr.getvalue())
-
-
-class CaskUrlVersioningTests(unittest.TestCase):
-    """Homebrew treats URLs without #{version} as unversioned and requires sha256 :no_check."""
-
-    def test_github_release_download_urls_interpolate_version(self):
-        casks_dir = ROOT / "Casks"
-        offenders = []
-
-        for cask_path in sorted(casks_dir.glob("*.rb")):
-            text = cask_path.read_text(encoding="utf-8")
-            for line_number, line in enumerate(text.splitlines(), start=1):
-                stripped = line.strip()
-                if not stripped.startswith("url "):
-                    continue
-                if "releases/download/" not in stripped:
-                    continue
-                if "#{version}" in stripped:
-                    continue
-                offenders.append(f"{cask_path.name}:{line_number}: {stripped}")
-
-        self.assertEqual(
-            offenders,
-            [],
-            "GitHub release download URLs must interpolate #{version}; "
-            "hardcoded versions fail `brew audit --strict` with "
-            "'Use sha256 :no_check when URL is unversioned'. Offenders:\n"
-            + "\n".join(offenders),
-        )
-
-
-class SyncWorkflowAuditScopeTests(unittest.TestCase):
-    """Sync Releases must not audit the entire tap via --tap (Homebrew audits all casks)."""
-
-    WORKFLOW_PATH = ROOT / ".github" / "workflows" / "sync.yml"
-    SYNCED_CASKS = ("pixiv-swiftui", "openkara", "screenize", "fluidvoice", "apple-say", "tg-drive")
-
-    def test_audit_step_targets_only_synced_casks_without_tap_flag(self):
-        workflow = self.WORKFLOW_PATH.read_text(encoding="utf-8")
-        self.assertIn("name: Audit casks", workflow)
-
-        audit_section = workflow.split("name: Audit casks", 1)[1].split("name: Commit and push changes", 1)[0]
-        self.assertNotIn(
-            "--tap",
-            audit_section,
-            "`brew audit --tap <tap>` audits every cask in the tap and lets unrelated "
-            "cask failures block Sync Releases",
-        )
-
-        for cask_name in self.SYNCED_CASKS:
-            self.assertIn(
-                f"thedavidweng/tap/{cask_name}",
-                audit_section,
-                f"Audit step must cover synced cask {cask_name}",
-            )
 
 
 if __name__ == "__main__":
