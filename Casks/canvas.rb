@@ -32,7 +32,6 @@ cask "canvas" do
   end
 
   binary "canvas"
-
   generate_completions_from_executable "canvas", "completion"
 
   # No zap stanza required
