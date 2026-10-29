@@ -32,7 +32,6 @@ cask "flickr" do
   end
 
   binary "flickr"
-
   generate_completions_from_executable "flickr", "completion"
 
   # No zap stanza required
