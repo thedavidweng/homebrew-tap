@@ -28,11 +28,5 @@ cask "qualtrics" do
                                        shell_parameter_format: :cobra,
                                        shells:                 [:bash, :zsh, :fish]
 
-  postflight_steps do
-    on_macos do
-      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}/qualtrics"]
-    end
-  end
-
   zap :not_required
 end

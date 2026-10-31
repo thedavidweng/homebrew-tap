@@ -1,0 +1,66 @@
+name: Verify signed casks
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-quarantine-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: Homebrew/actions/setup-homebrew@d482da0e602890d3160aade42e72c8556103bf04 # 2026.10.26.1
+        with:
+          core: true
+          cask: true
+      - name: Install quarantined, notarized command line tools
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+          HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          spctl --status
+          for pair in jobs-cli:jobs-cli monarchmoney-cli:monarch money:money qualtrics:qualtrics; do
+            token="${pair%%:*}"
+            binary="${pair#*:}"
+            brew fetch --cask --all-platforms "thedavidweng/tap/$token"
+            brew install --cask "thedavidweng/tap/$token"
+            path="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "$(brew --prefix)/bin/$binary")"
+            xattr -p com.apple.quarantine "$path"
+            codesign --verify --strict --check-notarization -R '=notarized' --verbose=2 "$path"
+            "$path" --help > /dev/null
+          done
+      - name: Reject an incorrect Linux checksum
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+          HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          file="$(brew --repository thedavidweng/tap)/Casks/jobs-cli.rb"
+          cp "$file" "$RUNNER_TEMP/jobs-cli.rb"
+          python3 - "$file" <<'PY'
+          from pathlib import Path
+          import sys
+
+          path = Path(sys.argv[1])
+          source = path.read_text()
+          checksum = "37e3ea363bd4a4989c0a6fdd85a8582863c2b71ddc9c52e2c9c6b7fbaa9422d9"
+          assert checksum in source
+          path.write_text(source.replace(checksum, "0" * 64))
+          PY
+          if brew fetch --cask --all-platforms thedavidweng/tap/jobs-cli > "$RUNNER_TEMP/bad-checksum.log" 2>&1; then
+            echo "Fetch accepted an incorrect Linux checksum" >&2
+            exit 1
+          fi
+          cat "$RUNNER_TEMP/bad-checksum.log"
+          grep -Ei 'checksum mismatch|sha256 mismatch' "$RUNNER_TEMP/bad-checksum.log"
+          mv "$RUNNER_TEMP/jobs-cli.rb" "$file"
