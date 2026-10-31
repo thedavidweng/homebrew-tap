@@ -97,3 +97,6 @@ a pull request for each update. Passing updates merge automatically after the
 cask audit, style check and other pull request checks complete. A failed check
 leaves the pull request open for review. The formulae for Amazon Photos and
 Zenodo are still published by their respective release workflows.
+
+Cask checks run only when a pull request changes a cask. Automated updates also
+fetch each supported platform's download and install the cask on macOS.

@@ -2,6 +2,8 @@ name: Merge cask updates
 
 on:
   workflow_run: # zizmor: ignore[dangerous-triggers] Inspect PR metadata only; never checkout or execute PR code.
+    # CodeQL is GitHub-managed default setup, not a repository workflow file.
+    # jactionlint ignore=workflow-run-names
     workflows: ["Cask checks", "Workflow lint", "CodeQL"]
     types: [completed]
 

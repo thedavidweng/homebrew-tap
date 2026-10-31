@@ -2,10 +2,7 @@ name: Workflow lint
 
 # Owner-wide jactionlint adoption: https://github.com/thedavidweng/thedavidweng/issues/17
 #
-# Standalone on purpose: the repo has no mise.toml and this job must be
-# present on every pull request, so it carries no `paths:` filter the way
-# `normalize-casks.yml` does. Read-only: checkout + lint, nothing else, and
-# no publishing token of any kind.
+# Keep this check on every pull request so cask auto-merge can wait for it.
 
 on:
   pull_request:
