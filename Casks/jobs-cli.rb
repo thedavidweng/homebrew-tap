@@ -23,6 +23,7 @@ cask "jobs-cli" do
     strategy :github_latest
   end
 
+  # Exercise cask CI with a multi-platform archive.
   binary "jobs-cli"
 
   zap :not_required
