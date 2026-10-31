@@ -25,11 +25,5 @@ cask "jobs-cli" do
 
   binary "jobs-cli"
 
-  postflight_steps do
-    on_macos do
-      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}/jobs-cli"]
-    end
-  end
-
   zap :not_required
 end

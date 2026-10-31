@@ -20,11 +20,5 @@ cask "money" do
 
   binary "money"
 
-  postflight_steps do
-    on_macos do
-      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}/money"]
-    end
-  end
-
   zap :not_required
 end

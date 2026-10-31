@@ -6,7 +6,6 @@ Homebrew tap for my own apps and CLI tools, plus a curated set of third-party ap
 
 ```bash
 brew tap thedavidweng/homebrew-tap
-brew trust thedavidweng/tap
 ```
 
 ## My Apps

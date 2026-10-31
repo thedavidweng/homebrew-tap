@@ -45,6 +45,7 @@ jobs:
             brew audit --cask --strict "thedavidweng/tap/$token"
             brew style "$file"
             if [[ "$HEAD_BRANCH" == bump-* ]]; then
+              brew fetch --cask --all-platforms "thedavidweng/tap/$token"
               brew install --cask --appdir="$RUNNER_TEMP/cask-apps" "thedavidweng/tap/$token"
             fi
           done < /tmp/cask-files
