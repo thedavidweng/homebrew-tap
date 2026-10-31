@@ -62,5 +62,5 @@ jobs:
             exit 1
           fi
           cat "$RUNNER_TEMP/bad-checksum.log"
-          grep -Ei 'checksum mismatch|sha256 mismatch' "$RUNNER_TEMP/bad-checksum.log"
+          grep -Ei 'reports different checksum|checksum mismatch|sha256 mismatch' "$RUNNER_TEMP/bad-checksum.log"
           mv "$RUNNER_TEMP/jobs-cli.rb" "$file"
