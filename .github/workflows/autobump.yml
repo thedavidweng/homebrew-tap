@@ -1,0 +1,59 @@
+name: Update casks
+
+on:
+  schedule:
+    - cron: "23 */3 * * *"
+  workflow_dispatch:
+    inputs:
+      casks:
+        description: Space-separated cask tokens (empty checks all casks)
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: update-casks
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: Homebrew/actions/setup-homebrew@d482da0e602890d3160aade42e72c8556103bf04 # 2026.10.26.1
+        with:
+          core: true
+          cask: true
+      - name: Trust tap
+        run: brew trust thedavidweng/tap
+      - name: Configure Git
+        env:
+          GH_TOKEN: ${{ secrets.AUTOBUMP_PAT }}
+        run: |
+          set -euo pipefail
+          test "$(gh api user --jq .login)" = "$GITHUB_REPOSITORY_OWNER"
+          id="$(gh api user --jq .id)"
+          git config --global user.name "$GITHUB_REPOSITORY_OWNER"
+          git config --global user.email "${id}+${GITHUB_REPOSITORY_OWNER}@users.noreply.github.com"
+          gh auth setup-git
+      - name: Check and update casks
+        env:
+          GH_TOKEN: ${{ secrets.AUTOBUMP_PAT }}
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.AUTOBUMP_PAT }}
+          CASKS: ${{ inputs.casks }}
+        run: |
+          set -euo pipefail
+          args=(--no-fork --open-pr --casks --full-name)
+          if [[ -n "$CASKS" ]]; then
+            read -r -a requested <<< "$CASKS"
+            for cask in "${requested[@]}"; do
+              args+=("thedavidweng/tap/$cask")
+            done
+          else
+            args+=(--tap=thedavidweng/tap)
+          fi
+          brew bump "${args[@]}"
