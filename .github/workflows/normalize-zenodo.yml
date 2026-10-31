@@ -1,0 +1,50 @@
+name: Normalize Zenodo formula
+
+on:
+  push:
+    branches: [main]
+    paths: ["Formula/zenodo.rb"]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: normalize-zenodo
+  cancel-in-progress: false
+
+jobs:
+  normalize:
+    permissions:
+      contents: write
+    runs-on: macos-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.15"
+      - name: Test and normalize
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          python -m unittest tests.test_normalize_zenodo
+          python scripts/normalize_zenodo.py
+          brew style Formula/zenodo.rb
+      - name: Commit changes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- Formula/zenodo.rb; then
+            exit 0
+          fi
+          id="$(gh api "users/$GITHUB_REPOSITORY_OWNER" --jq .id)"
+          git config user.name "$GITHUB_REPOSITORY_OWNER"
+          git config user.email "${id}+${GITHUB_REPOSITORY_OWNER}@users.noreply.github.com"
+          gh auth setup-git
+          git add Formula/zenodo.rb
+          git commit -m 'Normalize generated Zenodo formula'
+          git push origin HEAD:main

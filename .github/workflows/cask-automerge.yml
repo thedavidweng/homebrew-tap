@@ -1,0 +1,50 @@
+name: Merge cask updates
+
+on:
+  workflow_run: # zizmor: ignore[dangerous-triggers] Inspect PR metadata only; never checkout or execute PR code.
+    workflows: ["Cask checks", "Workflow lint", "CodeQL"]
+    types: [completed]
+
+permissions: {}
+
+concurrency:
+  group: cask-automerge-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      startsWith(github.event.workflow_run.head_branch, 'bump-')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: read
+      statuses: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      BRANCH: ${{ github.event.workflow_run.head_branch }}
+      SHA: ${{ github.event.workflow_run.head_sha }}
+      OWNER: ${{ github.repository_owner }}
+    steps:
+      - name: Merge checked cask bump
+        run: |
+          set -euo pipefail
+          prs="$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --head "$BRANCH" --json number,author,headRefOid,headRepository,baseRefName,isDraft,labels)"
+          pr="$(jq -r --arg sha "$SHA" --arg owner "$OWNER" --arg repo "$GITHUB_REPOSITORY" '
+            .[] | select(.headRefOid == $sha and .author.login == $owner and
+              .headRepository.nameWithOwner == $repo and .baseRefName == "main" and
+              (.isDraft | not) and
+              ([.labels[].name] | any(. == "automerge-skip" or . == "do not merge") | not)) | .number
+          ' <<< "$prs")"
+          [[ -n "$pr" ]] || exit 0
+          files="$(gh api "repos/$GITHUB_REPOSITORY/pulls/$pr/files" --paginate | jq -s 'add')"
+          jq -e 'length == 1 and .[0].status == "modified" and (.[0].filename | test("^Casks/[^/]+\\.rb$"))' <<< "$files" >/dev/null
+          gh pr checks "$pr" --repo "$GITHUB_REPOSITORY" --watch --fail-fast --interval 30
+          checks="$(gh pr checks "$pr" --repo "$GITHUB_REPOSITORY" --json name,bucket)"
+          jq -e 'any(.[]; .name == "Cask checks" and .bucket == "pass") and
+            any(.[]; .name == "Workflow lint" and .bucket == "pass") and
+            any(.[]; .name == "Analyze (python)" and .bucket == "pass")' <<< "$checks" >/dev/null
+          gh pr merge "$pr" --repo "$GITHUB_REPOSITORY" --squash --delete-branch --match-head-commit "$SHA"

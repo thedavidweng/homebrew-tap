@@ -7,6 +7,11 @@ cask "wiiu-downloader" do
   desc "Download Wii U games, updates, DLC and demos from Nintendo's servers"
   homepage "https://github.com/Xpl0itU/WiiUDownloader"
 
+  livecheck do
+    url :url
+    strategy :github_latest
+  end
+
   depends_on :macos
 
   app "WiiUDownloader.app"

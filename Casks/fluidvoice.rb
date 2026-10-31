@@ -9,7 +9,8 @@ cask "fluidvoice" do
 
   livecheck do
     url :url
-    strategy :github_latest
+    regex(/^v(\d+\.\d+\.\d+)$/i)
+    strategy :github_releases
   end
 
   depends_on macos: :sequoia
