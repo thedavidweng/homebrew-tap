@@ -2,7 +2,6 @@ name: Cask checks
 
 on:
   pull_request:
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -21,10 +20,6 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: Homebrew/actions/setup-homebrew@d482da0e602890d3160aade42e72c8556103bf04 # 2026.10.26.1
-        with:
-          core: true
-          cask: true
       - name: Find changed casks
         id: changed
         env:
@@ -32,7 +27,16 @@ jobs:
         run: |
           git diff --name-only --diff-filter=ACMRT "origin/$BASE_REF...HEAD" -- 'Casks/*.rb' > /tmp/cask-files
           cat /tmp/cask-files
+          if [[ -s /tmp/cask-files ]]; then
+            echo "any=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: Homebrew/actions/setup-homebrew@d482da0e602890d3160aade42e72c8556103bf04 # 2026.10.26.1
+        if: steps.changed.outputs.any == 'true'
+        with:
+          core: true
+          cask: true
       - name: Audit and style changed casks
+        if: steps.changed.outputs.any == 'true'
         env:
           HOMEBREW_NO_AUTO_UPDATE: "1"
           HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
