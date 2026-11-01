@@ -75,6 +75,7 @@ jobs:
           if [[ "$CASKROOM_STATE" == bad-checksum ]]; then
             unset HOMEBREW_UPDATE_TO_TAG
             brew update --force
+            flock -w 60 "$(brew --prefix)/var/homebrew/locks/update" true
             brew update --force
             brew config
             if brew doctor; then
@@ -82,8 +83,9 @@ jobs:
             else
               echo "brew doctor reported issues; see the diagnostic output above"
             fi
+          else
+            brew update
           fi
-          brew update
           source="$RUNNER_TEMP/aphotos-source"
           remote="$RUNNER_TEMP/aphotos-remote.git"
           mkdir -p "$source/Formula" "$source/Casks"
