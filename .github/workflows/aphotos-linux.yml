@@ -91,3 +91,8 @@ jobs:
           brew update
           brew list --cask test/aphotos-migration/aphotos
           aphotos --version | grep -F '0.1.5'
+          prefix="$(brew --prefix)"
+          test "$(command -v aphotos)" -ef "$(brew --caskroom)/aphotos/0.1.5/aphotos"
+          test -s "$prefix/etc/bash_completion.d/aphotos"
+          test -s "$prefix/share/zsh/site-functions/_aphotos"
+          test -s "$prefix/share/fish/vendor_completions.d/aphotos.fish"
