@@ -50,7 +50,6 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: Homebrew/actions/setup-homebrew@d482da0e602890d3160aade42e72c8556103bf04 # 2026.10.26.1
       - name: Test formula-to-cask migration
         env:
           HOMEBREW_DEVELOPER: "1"
@@ -59,6 +58,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          if [[ "$RUNNER_OS" == Linux ]]; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          else
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+          fi
+          brew update
           source="$RUNNER_TEMP/aphotos-source"
           remote="$RUNNER_TEMP/aphotos-remote.git"
           mkdir -p "$source/Formula" "$source/Casks"
