@@ -50,6 +50,8 @@ jobs:
             caskroom: present
           - os: ubuntu-latest
             caskroom: absent
+          - os: ubuntu-latest
+            caskroom: bad-checksum
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
@@ -76,6 +78,10 @@ jobs:
           mkdir -p "$source/Formula" "$source/Casks"
           cp Formula/aphotos.rb "$source/Formula/aphotos.rb"
           cp Casks/aphotos.rb "$source/Casks/aphotos.rb"
+          if [[ "$CASKROOM_STATE" == bad-checksum ]]; then
+            ruby -i -pe 'sub("153468a44608b4a78123753af965f70650b54b79fc76ea711743e40765bbc2b6", "0" * 64)' "$source/Casks/aphotos.rb"
+            grep -F "$(printf '0%.0s' {1..64})" "$source/Casks/aphotos.rb"
+          fi
           git -C "$source" init --initial-branch=main
           git -C "$source" config user.name thedavidweng
           id="$(gh api users/thedavidweng --jq .id)"
@@ -90,7 +96,7 @@ jobs:
           brew install --formula test/aphotos-migration/aphotos
           aphotos --version | grep -F '0.1.2'
           caskroom="$(brew --caskroom)"
-          if [[ "$CASKROOM_STATE" == present ]]; then
+          if [[ "$CASKROOM_STATE" != absent ]]; then
             mkdir -p "$caskroom"
           elif [[ -d "$caskroom" ]]; then
             rmdir "$caskroom"
@@ -100,7 +106,20 @@ jobs:
           git -C "$source" add tap_migrations.json
           git -C "$source" commit -m 'Migrate formula to cask'
           git -C "$source" push origin main
-          brew update 2>&1 | tee "$RUNNER_TEMP/migration-output.txt"
+          if brew update 2>&1 | tee "$RUNNER_TEMP/migration-output.txt"; then
+            :
+          elif [[ "$CASKROOM_STATE" != bad-checksum ]]; then
+            exit 1
+          fi
+          if [[ "$CASKROOM_STATE" == bad-checksum ]]; then
+            grep -F 'SHA-256 mismatch' "$RUNNER_TEMP/migration-output.txt"
+            test -x "$(brew --cellar)/aphotos/0.1.2/bin/aphotos"
+            if command -v aphotos; then
+              echo 'expected the old formula to be unlinked after the failed cask install' >&2
+              exit 1
+            fi
+            exit 0
+          fi
           if [[ "$CASKROOM_STATE" == absent ]]; then
             grep -F 'To uninstall the formula and install the cask, run:' "$RUNNER_TEMP/migration-output.txt"
             aphotos --version | grep -F '0.1.2'
