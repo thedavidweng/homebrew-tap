@@ -1,0 +1,39 @@
+name: aphotos Linux cask
+
+on:
+  pull_request:
+    paths:
+      - Casks/aphotos.rb
+      - .github/workflows/aphotos-linux.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aphotos-linux-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: Homebrew/actions/setup-homebrew@d482da0e602890d3160aade42e72c8556103bf04 # 2026.10.26.1
+      - name: Install and test cask
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+          HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          brew trust thedavidweng/tap
+          brew livecheck --cask thedavidweng/tap/aphotos --json | jq -e '.[0].version.latest != null'
+          brew install --cask thedavidweng/tap/aphotos
+          aphotos --version
+          aphotos doctor --allow-unconfigured --json
+          prefix="$(brew --prefix)"
+          test -s "$prefix/etc/bash_completion.d/aphotos"
+          test -s "$prefix/share/zsh/site-functions/_aphotos"
+          test -s "$prefix/share/fish/vendor_completions.d/aphotos.fish"
