@@ -38,3 +38,51 @@ jobs:
           test -s "$prefix/etc/bash_completion.d/aphotos"
           test -s "$prefix/share/zsh/site-functions/_aphotos"
           test -s "$prefix/share/fish/vendor_completions.d/aphotos.fish"
+
+  migration:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: Homebrew/actions/setup-homebrew@d482da0e602890d3160aade42e72c8556103bf04 # 2026.10.26.1
+      - name: Test formula-to-cask migration
+        env:
+          HOMEBREW_DEVELOPER: "1"
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+          HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          source="$RUNNER_TEMP/aphotos-source"
+          remote="$RUNNER_TEMP/aphotos-remote.git"
+          mkdir -p "$source/Formula" "$source/Casks"
+          cp Formula/aphotos.rb "$source/Formula/aphotos.rb"
+          cp Casks/aphotos.rb "$source/Casks/aphotos.rb"
+          git -C "$source" init --initial-branch=main
+          git -C "$source" config user.name thedavidweng
+          id="$(gh api users/thedavidweng --jq .id)"
+          printf -v email '%s+%s@%s' "$id" "$GITHUB_REPOSITORY_OWNER" 'users.noreply.github.com'
+          git -C "$source" config user.email "$email"
+          git -C "$source" add Formula/aphotos.rb Casks/aphotos.rb
+          git -C "$source" commit -m 'Add formula and cask'
+          git clone --bare "$source" "$remote"
+          git -C "$source" remote add origin "$remote"
+          brew tap test/aphotos-migration "$remote"
+          brew trust test/aphotos-migration
+          brew install --formula test/aphotos-migration/aphotos
+          aphotos --version | grep -F '0.1.2'
+          mkdir -p "$(brew --caskroom)"
+          git -C "$source" rm Formula/aphotos.rb
+          jq -n '{aphotos: "aphotos"}' > "$source/tap_migrations.json"
+          git -C "$source" add tap_migrations.json
+          git -C "$source" commit -m 'Migrate formula to cask'
+          git -C "$source" push origin main
+          brew update
+          brew list --cask test/aphotos-migration/aphotos
+          aphotos --version | grep -F '0.1.5'
