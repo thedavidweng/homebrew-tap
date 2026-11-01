@@ -104,7 +104,8 @@ jobs:
           if [[ "$CASKROOM_STATE" == absent ]]; then
             grep -F 'To uninstall the formula and install the cask, run:' "$RUNNER_TEMP/migration-output.txt"
             aphotos --version | grep -F '0.1.2'
-            brew uninstall --formula --force test/aphotos-migration/aphotos
+            brew uninstall --formula --force aphotos
+            test ! -d "$(brew --cellar)/aphotos"
             brew install --cask test/aphotos-migration/aphotos
           fi
           brew list --cask test/aphotos-migration/aphotos
