@@ -43,7 +43,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            caskroom: present
+          - os: macos-latest
+            caskroom: present
+          - os: ubuntu-latest
+            caskroom: absent
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
@@ -56,6 +62,7 @@ jobs:
           HOMEBREW_NO_AUTO_UPDATE: "1"
           HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
           GH_TOKEN: ${{ github.token }}
+          CASKROOM_STATE: ${{ matrix.caskroom }}
         run: |
           set -euo pipefail
           if [[ "$RUNNER_OS" == Linux ]]; then
@@ -82,13 +89,24 @@ jobs:
           brew trust test/aphotos-migration
           brew install --formula test/aphotos-migration/aphotos
           aphotos --version | grep -F '0.1.2'
-          mkdir -p "$(brew --caskroom)"
+          caskroom="$(brew --caskroom)"
+          if [[ "$CASKROOM_STATE" == present ]]; then
+            mkdir -p "$caskroom"
+          elif [[ -d "$caskroom" ]]; then
+            rmdir "$caskroom"
+          fi
           git -C "$source" rm Formula/aphotos.rb
           jq -n '{aphotos: "aphotos"}' > "$source/tap_migrations.json"
           git -C "$source" add tap_migrations.json
           git -C "$source" commit -m 'Migrate formula to cask'
           git -C "$source" push origin main
-          brew update
+          brew update 2>&1 | tee "$RUNNER_TEMP/migration-output.txt"
+          if [[ "$CASKROOM_STATE" == absent ]]; then
+            grep -F 'To uninstall the formula and install the cask, run:' "$RUNNER_TEMP/migration-output.txt"
+            aphotos --version | grep -F '0.1.2'
+            brew uninstall --formula --force test/aphotos-migration/aphotos
+            brew install --cask test/aphotos-migration/aphotos
+          fi
           brew list --cask test/aphotos-migration/aphotos
           aphotos --version | grep -F '0.1.5'
           prefix="$(brew --prefix)"
