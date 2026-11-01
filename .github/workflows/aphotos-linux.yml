@@ -112,10 +112,10 @@ jobs:
             exit 1
           fi
           if [[ "$CASKROOM_STATE" == bad-checksum ]]; then
-            grep -F 'SHA-256 mismatch' "$RUNNER_TEMP/migration-output.txt"
+            grep -F 'reports different checksum' "$RUNNER_TEMP/migration-output.txt"
             test -x "$(brew --cellar)/aphotos/0.1.2/bin/aphotos"
-            if command -v aphotos; then
-              echo 'expected the old formula to be unlinked after the failed cask install' >&2
+            if ! aphotos --version | grep -F '0.1.2'; then
+              echo 'failed cask installation left the existing aphotos command unavailable' >&2
               exit 1
             fi
             exit 0
