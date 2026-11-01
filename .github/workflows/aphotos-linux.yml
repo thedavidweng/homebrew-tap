@@ -72,6 +72,17 @@ jobs:
           else
             eval "$(/opt/homebrew/bin/brew shellenv)"
           fi
+          if [[ "$CASKROOM_STATE" == bad-checksum ]]; then
+            unset HOMEBREW_UPDATE_TO_TAG
+            brew update --force
+            brew update --force
+            brew config
+            if brew doctor; then
+              echo "brew doctor: no issues found"
+            else
+              echo "brew doctor reported issues; see the diagnostic output above"
+            fi
+          fi
           brew update
           source="$RUNNER_TEMP/aphotos-source"
           remote="$RUNNER_TEMP/aphotos-remote.git"
