@@ -5,13 +5,13 @@
 class Aphotos < Formula
   desc "Unofficial Amazon Photos / Drive v1 CLI and Go SDK"
   homepage "https://github.com/thedavidweng/amazon-photos"
-  version "0.1.2"
+  version "0.1.5"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/thedavidweng/amazon-photos/releases/download/v0.1.2/aphotos_0.1.2_darwin_amd64.tar.gz"
-      sha256 "e69969e14c4fae4c7fd4add3d3b7a3c38f2027f7df5c0afb9d31aadf457ddac1"
+      url "https://github.com/thedavidweng/amazon-photos/releases/download/v0.1.5/aphotos_0.1.5_darwin_amd64.tar.gz"
+      sha256 "3f820d7ec6fdbac7614d5c9e83c9e79fed9e735ffc46fcef7aceb7eb0a3b4041"
 
       define_method(:install) do
         bin.install "aphotos"
@@ -19,8 +19,8 @@ class Aphotos < Formula
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/thedavidweng/amazon-photos/releases/download/v0.1.2/aphotos_0.1.2_darwin_arm64.tar.gz"
-      sha256 "9879b58dc48db7761eff454b07b0858af4ffbfeeb961db49983463f15619b560"
+      url "https://github.com/thedavidweng/amazon-photos/releases/download/v0.1.5/aphotos_0.1.5_darwin_arm64.tar.gz"
+      sha256 "7005e8a56deec2b147362e773e1a2b80acbbeaf0a2b831b8201f99b667a3682f"
 
       define_method(:install) do
         bin.install "aphotos"
@@ -31,16 +31,16 @@ class Aphotos < Formula
 
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      url "https://github.com/thedavidweng/amazon-photos/releases/download/v0.1.2/aphotos_0.1.2_linux_amd64.tar.gz"
-      sha256 "93cf74b75dbea81e63eb2163bcc6601c91ffeef8337a3c71b0e98f4c0e7aed12"
+      url "https://github.com/thedavidweng/amazon-photos/releases/download/v0.1.5/aphotos_0.1.5_linux_amd64.tar.gz"
+      sha256 "153468a44608b4a78123753af965f70650b54b79fc76ea711743e40765bbc2b6"
       define_method(:install) do
         bin.install "aphotos"
         generate_completions_from_executable(bin/"aphotos", "completion")
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/thedavidweng/amazon-photos/releases/download/v0.1.2/aphotos_0.1.2_linux_arm64.tar.gz"
-      sha256 "27d36ec2ce52d98b06582879764c84808bd43acef0839b193bd9eb9157321f9f"
+      url "https://github.com/thedavidweng/amazon-photos/releases/download/v0.1.5/aphotos_0.1.5_linux_arm64.tar.gz"
+      sha256 "cec6b8c824ef64b9932fd450d818e927d02461c119551c00da9df5ab0f0deaf6"
       define_method(:install) do
         bin.install "aphotos"
         generate_completions_from_executable(bin/"aphotos", "completion")
