@@ -1,0 +1,71 @@
+name: Test aphotos formula upgrade
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aphotos-formula-test-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  upgrade:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        checksum: [valid, invalid]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: Homebrew/actions/setup-homebrew@d482da0e602890d3160aade42e72c8556103bf04 # 2026.10.26.1
+      - name: Install and upgrade formula
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+          HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
+          CHECKSUM: ${{ matrix.checksum }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          source="$RUNNER_TEMP/aphotos-tap"
+          mkdir -p "$source/Formula"
+          git show ee026d8c852bb584868e662d5375f5a86f6e4df7:Formula/aphotos.rb > "$source/Formula/aphotos.rb"
+          git -C "$source" init --initial-branch=main
+          git -C "$source" config user.name "$GITHUB_REPOSITORY_OWNER"
+          id="$(gh api users/"$GITHUB_REPOSITORY_OWNER" --jq .id)"
+          printf -v email '%s+%s@%s' "$id" "$GITHUB_REPOSITORY_OWNER" 'users.noreply.github.com'
+          git -C "$source" config user.email "$email"
+          git -C "$source" add Formula/aphotos.rb
+          git -C "$source" commit -m 'Add existing formula'
+          brew tap test/aphotos-formula "$source"
+          brew trust test/aphotos-formula
+          brew install --formula test/aphotos-formula/aphotos
+          aphotos --version | grep -F '0.1.2'
+
+          tap="$(brew --repo test/aphotos-formula)"
+          cp Formula/aphotos.rb "$tap/Formula/aphotos.rb"
+          if [[ "$CHECKSUM" == invalid ]]; then
+            sed -i.bak -E 's/sha256 "[a-f0-9]{64}"/sha256 "0000000000000000000000000000000000000000000000000000000000000000"/g' "$tap/Formula/aphotos.rb"
+            if brew upgrade --formula test/aphotos-formula/aphotos > "$RUNNER_TEMP/upgrade.log" 2>&1; then
+              echo 'upgrade unexpectedly succeeded with an invalid checksum' >&2
+              exit 1
+            fi
+            cat "$RUNNER_TEMP/upgrade.log"
+            grep -i 'checksum' "$RUNNER_TEMP/upgrade.log"
+            aphotos --version | grep -F '0.1.2'
+          else
+            brew upgrade --formula test/aphotos-formula/aphotos
+            aphotos --version | grep -F '0.1.5'
+            brew test test/aphotos-formula/aphotos
+            prefix="$(brew --prefix)"
+            test -s "$prefix/etc/bash_completion.d/aphotos"
+            test -s "$prefix/share/zsh/site-functions/_aphotos"
+            test -s "$prefix/share/fish/vendor_completions.d/aphotos.fish"
+          fi
