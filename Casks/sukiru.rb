@@ -1,9 +1,9 @@
 cask "sukiru" do
   arch arm: "arm64", intel: "x86_64"
 
-  version "1.20.0"
-  sha256 arm:   "d6d976bdd0d8d9ed0983e60133b3aca57e4f3dd52561a95287485bed8eec4eda",
-         intel: "ab01b58c8f2c85959087dea3b93eca75861b349ef4f42c46e7f81c16c468552a"
+  version "1.21.0"
+  sha256 arm:   "57ab43a668331a0e61d93fa07e765b06b8a68cf6db7a4c388060f3aace2fd25c",
+         intel: "c819c5afcc062f811e9d24d0804b702dd3e53ee074c44a94c52399e38c9ea66d"
 
   url "https://github.com/thedavidweng/sukiru/releases/download/v#{version}/Sukiru-#{arch}.dmg"
   name "Sukiru"
