@@ -12,7 +12,7 @@ cask "screenize" do
     strategy :github_latest
   end
 
-  depends_on :macos
+  depends_on macos: :ventura
 
   app "Screenize.app"
 end

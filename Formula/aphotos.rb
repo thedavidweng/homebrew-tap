@@ -5,7 +5,6 @@
 class Aphotos < Formula
   desc "Unofficial Amazon Photos / Drive v1 CLI and Go SDK"
   homepage "https://github.com/thedavidweng/amazon-photos"
-  version "0.1.5"
   license "MIT"
 
   on_macos do
