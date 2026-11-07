@@ -1,9 +1,9 @@
 cask "openkara" do
   arch arm: "aarch64", intel: "x64"
 
-  version "0.19.2"
-  sha256 arm:   "09d85ef8fe9717dae57983c7bf5a847385b9da4353046d46fc769fdac4cb41c4",
-         intel: "7e960ef6a3e4d61e6c6d1f36f7f1a6f2d64f8edce1b99494851cdd4649b34ed9"
+  version "0.20.0"
+  sha256 arm:   "56eb7fa93f34d8050f4a1f2a4249b8af27e039c3fa780060748408d76572fa85",
+         intel: "3f5eb642617010399ffe1449546736700b7ed7c5befe7be9bceca53d82f400d4"
 
   url "https://github.com/thedavidweng/OpenKara/releases/download/v#{version}/OpenKara_#{version}_#{arch}.dmg"
   name "OpenKara"
@@ -15,7 +15,7 @@ cask "openkara" do
     strategy :github_latest
   end
 
-  depends_on :macos
+  depends_on macos: :sonoma
 
   app "OpenKara.app"
 end
