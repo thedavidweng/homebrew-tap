@@ -1,9 +1,9 @@
 cask "telegram-drive" do
   arch arm: "aarch64", intel: "x64"
 
-  version "4.1.7"
-  sha256 arm:   "2e88bb90293f7aba052abc4575e788546a2d102b3675e7b173649121aa4785fd",
-         intel: "7a4e57b2a3eadf34266b3f2ec1e6be7ca90fc95a48e9de020b26ccb5300caa18"
+  version "4.2.0"
+  sha256 arm:   "28d9fb38736fb08bf1a4a4faadb4ee708889bc8cdfbce011f7e0b9d38c4b5442",
+         intel: "29850a159dac20a9ce9a7d641be45cb1a7798946359a0fe0e0d06356f0504513"
 
   url "https://github.com/caamer20/Telegram-Drive/releases/download/v#{version}/Telegram.Drive_#{version}_#{arch}.dmg"
   name "Telegram Drive"
